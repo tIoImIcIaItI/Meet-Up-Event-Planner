@@ -70,7 +70,6 @@ Any errors encountered attempting to load or save events will display an alert b
 - No internationalization or localization; password checks, dates and times are en-us centric.
 - There are no limits on the number of events displayed (ex. paging very many events).
 - The login form does not authenticate the input user credentials; credentials are not stored even within the page's lifetime. Thus there is no error handling for authentication failures due to invalid user credentials (or password reset, etc.).
-- Event dates are not validated for proper order (end after start); events may be created for dates in the past.
 - There is no input for specifying a user avatar image source.
 - Deep-linking (routing) into the SPA's content or state is not supported.
 
@@ -88,6 +87,7 @@ The following sources were used in building the app and/or its execution.
 - Password Validation Regex: [The Art Of Web](http://www.the-art-of-web.com/javascript/validate-password/)
 - Element.remove: [Stack Overflow](http://stackoverflow.com/questions/3387427/remove-element-by-id)
 - Element.prependChild: [CallMeNick](http://callmenick.com/post/prepend-child-javascript)
+- Standard Polyfills: [MDN](https://developer.mozilla.org)
 
 ### CSS
 
