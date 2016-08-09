@@ -98,6 +98,8 @@
 		var that = this;
 
 		var emailEl = document.getElementById('new-event-guest');
+		var startEl = document.getElementById('new-event-start');
+		var endEl = document.getElementById('new-event-end');
 
 		// SOURCE: http://stackoverflow.com/questions/46155/validate-email-address-in-javascript
 		function validateEmail(email) {
@@ -143,10 +145,58 @@
 			return true;
 		}
 
+		function updateDateRangeValidity() {
+
+			// Empty range is handled by required attribute
+			if (!startEl.value && !endEl.value)
+				return true;
+
+			var now = moment(); // TODO: inject for testability
+			var start = moment(startEl.value);
+			var end = moment(endEl.value);
+
+			if (start.isValid()) {
+
+				// Ensure the start date occurs in the future
+				if (now.isAfter(start)) {
+
+					startEl.setCustomValidity('The event cannot begin in the past');
+
+					that.updateValidationErrorState(startEl);
+
+					return false;
+				}
+
+				if (end.isValid()) {
+
+					// Ensure the end date occurs after the start date
+					if (start.isAfter(end)) {
+
+						endEl.setCustomValidity('The event cannot end before it starts');
+
+						that.updateValidationErrorState(endEl);
+
+						return false;
+					}
+				}
+			}
+
+			return true;
+		}
+
 		// Custom validate the email field on blur
 		emailEl.addEventListener(
 			'blur',
 			updateEmailValidity);
+
+		// Custom validate the datetime fields on blur
+		startEl.addEventListener(
+			'blur',
+			updateDateRangeValidity);
+
+		endEl.addEventListener(
+			'blur',
+			updateDateRangeValidity);
 
 		// Add an icon to the add email button
 		var addGuestButton = document.getElementById('new-event-guest-add-btn');
@@ -201,6 +251,9 @@
 
 				isValid &= input.validity.valid;
 			});
+
+			// Check the datetime range
+			updateDateRangeValidity();
 
 			// Ensure we have at least one guest's email
 			isValid &= updateGuestsValidity();
