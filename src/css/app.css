@@ -1,0 +1,406 @@
+/* ---------------------------------------------------------------------------*/
+/* BOOTSTRAP OVERRIDES */
+
+.form-group {
+	margin-bottom: 0.5em;
+}
+
+.help-block {
+	margin-top: 0.25em;
+	margin-bottom: 0.25em;
+}
+
+.btn-primary {
+	border: 2px solid #024;
+	color: #024;
+	background: none;
+}
+
+.btn-link {
+	color: #ddf;
+}
+
+.btn-link.btn-in-form {
+	color: #668;
+}
+
+/* ---------------------------------------------------------------------------*/
+/* APPLICATION STYLES */
+
+/* PALLETTE
+    #eeeef9
+    #fafdff
+    #fafaff
+    #3a536d
+    #668
+    #666
+    #fff
+    #333
+    #024
+    red
+    green
+
+    ADAPTED FROM: https://www.invisionapp.com/relate
+    -webkit-linear-gradient(315deg,#76baf8 0,#ac6bfe 100%) #76baf8;
+    linear-gradient(135deg,#76baf8 0,#ac6bfe 100%) #76baf8;
+*/
+
+* {
+    /* ReSharper disable once CssBrowserCompatibility */
+    box-sizing: border-box; /* fallback to whatever */
+}
+
+html {
+	margin: 0;
+	padding: 0;
+	min-height: 100%;
+	width: 100%;
+	background: -webkit-linear-gradient(315deg,#76baf8 0,#ac6bfe 100%) #76baf8;
+	background: linear-gradient(135deg,#76baf8 0,#ac6bfe 100%) #76baf8;
+}
+
+body {
+	font-family: 'Chivo', sans-serif;
+	color: #024;
+	background-color: transparent;
+    /* ReSharper disable once CssBrowserCompatibility */
+    min-width: 350px; /* fallback to nothing */
+	max-width: 60em;
+	min-height: 100%;
+	width: 100%;
+}
+
+h1 {
+	margin-top: 0.25em;
+	margin-bottom: 0.5em;
+	font-size: 4em;
+	letter-spacing: 110%;
+}
+
+h2 {
+	margin-top: 0.25em;
+	margin-bottom: 0.5em;
+	color: #3a536d;
+	border-bottom: 0.66px solid #cce;
+}
+
+h3 {
+	margin-top: 0.25em;
+	margin-bottom: 0.5em;
+	color: #3a536d;
+	border-bottom: 0.66px solid #cce;
+	text-align: right;
+}
+
+legend {
+	color: #668;
+	margin-bottom: 0.25em;
+	text-align: right;
+}
+
+label {
+	margin-bottom: 0.25em;
+	color: #3a536d;
+}
+
+label.required:after {
+	content: ' *';
+	color: #668;
+}
+
+ul {
+	margin: 0;
+	padding: 0;
+    list-style: none;
+}
+
+input,
+textarea {
+    display: block;
+}
+
+section {
+	margin: 1em 0;
+}
+
+form {
+	max-width: 36em;
+}
+
+.prompt {
+	text-align: center;
+	margin: 1em;
+}
+
+.user-login-form-container,
+.account-create-form-container {
+	max-width: 20em;
+}
+
+.hint {
+	font-style: oblique;
+	font-size: smaller;
+}
+
+.page-header {
+	background-color: #eeeef9;
+	margin: 0 -1em;
+	padding: 1em;
+}
+
+.page-header-text {
+	font-family: 'Montserrat Alternates', serif;
+    /* ReSharper disable once CssBrowserCompatibility */
+	font-variant: small-caps; /* fallback to nothing */
+	font-weight: 700;
+	letter-spacing: 0.15em;
+    /* ReSharper disable once CssBrowserCompatibility */
+    /* ReSharper disable RequiresFallbackColor */
+	text-shadow: 0.08em 0.08em 0.3em rgba(0,0,0,.33); /* fallback to nothing */
+    /* ReSharper restore RequiresFallbackColor */
+}
+
+.user-info {
+	color: #668;
+}
+
+.user-avatar-img {
+	margin: 0 0 0 0.5em;
+}
+
+.user-name {
+	font-size: 0.9em;
+	text-align: right;
+	margin-top: 0.25em;
+}
+
+.logout-btn {
+	margin: 0;
+	padding: 0;
+	color: #668;
+}
+
+.btn-glyph {
+	width: 1.25em;
+	margin: 0.25em;
+	margin-left: 0;
+    text-align: center;
+}
+
+.event-label-glyph {
+	width: 1.25em;
+	margin: 0.25em;
+    margin-left: 0;
+    text-align: center;
+	color: #668;
+}
+
+.authentication-header-text,
+.event-list-header {
+	display: none;
+}
+
+.event-list-item {
+	width: 100%;
+	background-color: #eeeef9;
+	display: inline-block;
+	padding: 1em;
+	margin: 1em 1em 0 0;
+	border-left: 4px solid #3a536d;
+}
+
+.event-list-item:hover,
+.event-list-item:focus {
+	background-color: #fff;
+	border-left: 4px solid #ddf;
+    /* ReSharper disable once CssBrowserCompatibility */
+    /* ReSharper disable RequiresFallbackColor */
+  	box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23); /* fallback to nothing */
+    /* ReSharper restore RequiresFallbackColor */
+	outline: none; /* replaced with styling above */
+}
+
+.event-type {
+	color: #666;
+}
+
+.event-title {
+	font-family: 'Montserrat Alternates', serif;
+	font-weight: 700;
+	border-bottom: 0.66px solid #ddf;
+	text-align: left;
+	letter-spacing: 0.10em;
+    /* ReSharper disable once CssBrowserCompatibility */
+    /* ReSharper disable RequiresFallbackColor */
+	text-shadow: 0.05em 0.05em 0.15em rgba(0,0,0,.33) /* fallback to nothing */
+    /* ReSharper restore RequiresFallbackColor */
+}
+
+.event-value-secondary {
+	margin-left: 1.35em;
+ }
+
+.event-starts-about,
+.event-ends-about {
+	color: #666;
+	font-style: italic;
+}
+
+.event-guest-info {
+	display: inline-block;
+	margin-right: 0.5em;
+	color: #666;
+}
+
+.event-message {
+	font-weight: 700;
+}
+
+time,
+.event-message,
+.event-location,
+.event-host,
+.event-guest-list {
+	margin: 0.25em 0;
+}
+
+.form-control-inline {
+	display: inline-block;
+	width: auto;
+}
+
+.guest-item {
+	background-color: #eeeef9;
+	padding-left: 1em;
+	display: inline-block;
+	margin: 0.25em;
+	border-left: 4px solid #3a536d;
+    /* ReSharper disable once CssBrowserCompatibility */
+	border-radius: 4px; /* fallback to nothing */
+    /* ReSharper disable once CssBrowserCompatibility */
+    /* ReSharper disable RequiresFallbackColor */
+	box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24); /* fallback to nothing */
+    /* ReSharper restore RequiresFallbackColor */
+}
+
+.guest-item:hover,
+.guest-item:focus {
+	background-color: #fff;
+	border-left: 4px solid #ddf;
+    /* ReSharper disable once CssBrowserCompatibility */
+    /* ReSharper disable RequiresFallbackColor */
+	box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23); /* fallback to nothing */
+    /* ReSharper restore RequiresFallbackColor */
+	outline: none; /* replaced with styling above */
+}
+
+.guest-email-address {
+	margin-right: 0.5em;
+}
+
+.validation-error {
+	margin: 0;
+	margin-top: 0.25em;
+	font-style: italic;
+}
+
+.pwd-ex {
+    color: #024; /* match input field text color for better associativity */
+}
+
+.pwd-check {
+    margin-left: 1em;
+}
+
+.pwd-check.text-danger:before {
+    content: "\f05e"; /* ban/block */
+    font-family: FontAwesome;
+    font-style: normal;
+    font-weight: normal;
+    text-decoration: inherit;
+    padding-right: 0.5em;
+}
+
+.pwd-check.text-success:before {
+    content: "\f00c"; /* check */
+    font-family: FontAwesome;
+    font-style: normal;
+    font-weight: normal;
+    text-decoration: inherit;
+    padding-right: 0.5em;
+}
+
+/* SOURCE: https://developers.google.com/web/fundamentals/design-and-ui/input/forms/provide-real-time-validation?hl=en */
+/* fallback to nothing */
+/* ReSharper disable CssBrowserCompatibility */
+form input.dirty:not(:focus):valid,
+form textarea.dirty:not(:focus):valid {
+/* ReSharper restore CssBrowserCompatibility */
+    border-color: green;
+}
+
+/* fallback to nothing */
+/* ReSharper disable CssBrowserCompatibility */
+form input.dirty:not(:focus):invalid,
+form textarea.dirty:not(:focus):invalid {
+/* ReSharper restore CssBrowserCompatibility */
+    border-color: red;
+}
+
+/* ---------------------------------------------------------------------------*/
+/* At small-ish widths, tighten up the whitespace, and font and image sizes */
+@media screen and (max-width: 767px) {
+
+	h1, h2, h3 {
+		margin-top: 0.2em;
+	}
+
+	h1 {
+		font-size: 3em;
+	}
+
+	.user-avatar-img {
+		width: 32px;
+		height: 32px;
+	}
+
+}
+
+/* ---------------------------------------------------------------------------*/
+/* At tiny widths, further tighten up the whitespace and font sizes, and hide decorative images */
+@media screen and (max-width: 520px) {
+
+	h1, h2, h3 {
+		margin-top: 0.2em;
+	}
+
+	h1 {
+		font-size: 1.9em;
+	}
+
+	h2 {
+		font-size: 1.3em;
+	}
+
+	h3 {
+		font-size: 1.2em;
+	}
+
+	legend {
+		font-size: 1.2em;
+		margin-bottom: 0.15em;
+	}
+
+	.validation-error {
+		font-size: 0.9em;
+	}
+
+	.prompt {
+		margin: 0.5em;
+	}
+
+	.user-avatar-img {
+		display: none;
+	}
+
+}

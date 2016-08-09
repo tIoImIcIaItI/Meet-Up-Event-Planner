@@ -1,0 +1,13 @@
+# Outputs
+dist
+
+# Dependencies
+node_modules
+
+# Mac OS clutter
+.DS_Store
+
+# Visual Studio
+*.sln
+.vs
+*.user

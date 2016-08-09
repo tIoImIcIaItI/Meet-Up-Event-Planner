@@ -1,0 +1,15 @@
+/* ---------------------------------------------------------------------------*/
+/* HELPER AND MIX-IN CLASSES */
+
+.invisible {
+	visibility: hidden;
+}
+
+.center {
+	margin-left: auto;
+	margin-right: auto;
+}
+
+.block {
+	display: block;
+}

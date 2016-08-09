@@ -1,0 +1,341 @@
+﻿<!doctype html>
+<html lang="en-us">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Event Planner</title>
+    <meta name="description" content="Organizes your events">
+
+    <!-- FONTS -->
+    <link href="https://fonts.googleapis.com/css?family=Roboto|Roboto+Slab|Montserrat+Alternates|Chivo:400,700" rel="stylesheet">
+    <!-- FRAMEWORKS, ETC -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+    <script src="https://use.fontawesome.com/59942f4bda.js"></script>
+
+    <!-- APP INCLUDES -->
+    <!-- ReSharper disable once Html.PathError -->
+    <link rel="stylesheet" href="css/app.min.css">
+</head>
+
+<body class="container">
+
+    <!-- NON-STARTER SECTION -->
+    <!--[if lt IE 8]>
+        <p class="browserupgrade">You are using an <strong>unsupported</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to experience this app.</p>
+    <![endif]-->
+    <noscript>
+        This web application requires JavaScript.
+        JavaScript must be supported and enabled in your browser to use this app.
+        Please <a href="http://browsehappy.com/">upgrade your browser</a> if needed, and enable JavaScript.
+    </noscript>
+
+    <!-- PAGE HEADER SECTION -->
+    <header class="row page-header card-2">
+
+        <h1 class="page-header-text pull-left">Event Planner</h1>
+
+        <div id="user-info" class="pull-right hidden user-info-container">
+
+            <div class="pull-right user-avatar">
+                <img id="user-avatar-img" class="pull-right user-avatar-img card-1" alt="" />
+            </div>
+
+            <div class="pull-right">
+                <div id="user-name" class="user-name"></div>
+                <button id="logout-btn" class="pull-right btn btn-link logout-btn" type="button" title="log out">log out</button>
+            </div>
+
+        </div>
+
+    </header>
+
+    <main>
+
+        <!-- AUTHENTICATION SECTION -->
+        <section id="authentication-section" class="hidden">
+
+            <h2 class="section-header authentication-header-text">Login or Register</h2>
+
+            <div class="">
+
+                <div id="prompt-login" class="prompt">
+                    Already have an account?
+                    <button id="btn-login" class="btn btn-link block center" type="button">Log In</button>
+                </div>
+
+                <div id="prompt-register" class="prompt">
+                    Need an account?
+                    <button id="btn-register" class="btn btn-link block center" type="button">Register</button>
+                </div>
+
+                <!-- USER LOGIN FORM -->
+                <div class="center">
+
+                    <form id="user-login-form" class="well center" action="#">
+
+                        <!-- FORM HEADER -->
+                        <h3 class="form-header">Log In</h3>
+
+                        <!-- EMAIL -->
+                        <div class="form-group">
+                            <label class="control-label" for="user-login-email">Email</label>
+                            <input id="user-login-email" type="email" name="user-login-email" autocomplete="email" placeholder="me@someplace.com" required maxlength="64" class="form-control" data-autofocus>
+                            <div id="user-login-email-error" data-error-for="user-login-email" class="validation-error text-danger invisible"></div>
+                        </div>
+
+                        <!-- PASSWORD -->
+                        <!-- ADAPTED FROM: http://www.the-art-of-web.com/javascript/validate-password/ -->
+                        <div class="form-group">
+                            <label class="control-label" for="user-login-password">Password</label>
+                            <input id="user-login-password" type="password" name="password" placeholder="password" autocomplete="off" required maxlength="16" class="form-control">
+                            <div id="user-login-password-error" data-error-for="user-login-password" class="validation-error text-danger invisible"></div>
+                        </div>
+
+                        <!-- LOGIN BUTTON -->
+                        <button id="btn-user-login" class="btn btn-primary" type="submit">
+                            Log In
+                        </button>
+
+                    </form>
+                </div>
+
+                <!-- USER ACCOUNT CREATE FORM -->
+                <div class="center">
+                    <form id="account-create-form" class="well center hidden" action="#">
+
+                        <!-- FORM HEADER -->
+                        <h3 class="form-header">Register</h3>
+
+                        <!-- NAME -->
+                        <div class="form-group">
+                            <label class="control-label" for="account-name">Name</label>
+                            <input id="account-name" type="text" name="account-name" autocomplete="name" placeholder="David J. King" required maxlength="32" class="form-control" data-autofocus>
+                            <div id="account-name-error" data-error-for="account-name" class="validation-error text-danger invisible"></div>
+                        </div>
+
+                        <!-- EMAIL -->
+                        <div class="form-group">
+                            <label class="control-label" for="account-email">Email</label>
+                            <input id="account-email" type="email" name="account-email" autocomplete="email" placeholder="me@someplace.com" required maxlength="64" class="form-control">
+                            <div id="account-email-error" data-error-for="account-email" class="validation-error text-danger invisible"></div>
+                        </div>
+
+                        <!-- PASSWORD -->
+                        <!-- ADAPTED FROM: http://www.the-art-of-web.com/javascript/validate-password/ -->
+                        <div class="form-group">
+                            <label class="control-label" for="account-password">Password</label>
+                            <input id="account-password" type="password" name="password" 
+                                   placeholder="password" autocomplete="off" required maxlength="16" class="form-control"
+                                   pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z])\w{8,}" 
+                                   title="Include at least one number, one lowercase and one uppercase letter, at least eight characters that are letters, numbers or the underscore" 
+                                   aria-describedby="account-password-hint">
+                            <div id="account-password-hint-error" data-error-for="account-password-hint" class="validation-error text-danger invisible"></div>
+
+                            <div class="pwd-check-header" aria-hidden="true">Your password must contain: </div>
+                            <div id="pwd-check-number" class="pwd-check" aria-hidden="true">at least one number for example <span class="pwd-ex">4</span></div>
+                            <div id="pwd-check-lower" class="pwd-check" aria-hidden="true">at least one lowercase letter for example <span class="pwd-ex">d</span></div>
+                            <div id="pwd-check-upper" class="pwd-check" aria-hidden="true">at least one uppercase letter for example <span class="pwd-ex">D</span></div>
+                            <div id="pwd-check-special" class="pwd-check" aria-hidden="true">only letters, numbers or the underscore <span class="pwd-ex">_</span></div>
+                            <div id="pwd-check-length" class="pwd-check" aria-hidden="true">at least 8 but not more than 16 characters</div>
+
+                            <div id="account-password-hint" class="help-block sr-only">
+                                Include at least one number, one lowercase and one uppercase letter, at least eight characters that are letters, numbers or the underscore
+                            </div>
+                        </div>
+
+                        <!-- AGE -->
+                        <div class="form-group">
+                            <label class="control-label" for="account-age">Age</label>
+                            <input id="account-age" type="number" name="account-age" autocomplete="age" placeholder="25" min="1" max="120" class="form-control">
+                            <div id="account-age-error" data-error-for="account-age" class="validation-error text-warning invisible"></div>
+                        </div>
+
+                        <!-- GENDER -->
+                        <div class="form-group">
+                            <label class="control-label" for="account-gender">Gender Identification</label>
+                            <input id="account-gender" name="account-gender" maxlength="32" class="form-control" list="account-genders">
+                            <datalist id="account-genders">
+                                <option value="Prefer Not To Say">
+                                <option value="Male">
+                                <option value="Female">
+                                <option value="Other">
+                            </datalist>
+                            <div id="account-gender-error" data-error-for="account-gender" class="validation-error text-warning invisible"></div>
+                        </div>
+
+                        <!-- CREATE ACCOUNT BUTTON -->
+                        <button id="btn-account-create" class="btn btn-primary" type="submit">
+                            Create Account
+                        </button>
+
+                    </form>
+                </div>
+
+            </div>
+
+        </section>
+
+        <!-- EVENTS SECTION -->
+        <section id="events-section" class="hidden">
+
+            <!-- EVENT CREATE FORM -->
+            <div class="event-create-form-container">
+                <form id="event-create-form" class="well center hidden" action="#" novalidate>
+
+                    <!-- FORM HEADER -->
+                    <h2 class="form-header hidden">Describe Your Event</h2>
+
+                    <fieldset title="What">
+                        <legend>What</legend>
+
+                        <!-- EVENT NAME -->
+                        <div class="form-group">
+                            <label class="control-label" for="new-event-name">What's it called?</label>
+                            <input id="new-event-name" type="text" name="new-event-name" placeholder="Buddy's Big Bash" required maxlength="64" class="form-control" data-autofocus>
+                            <div id="new-event-name-error" data-error-for="new-event-name" class="validation-error text-danger invisible"></div>
+                        </div>
+
+                        <!-- EVENT TYPE -->
+                        <div class="form-group">
+                            <label class="control-label" for="new-event-type">What sort of event is this?</label>
+                            <input list="new-event-types" id="new-event-type" name="new-event-type" placeholder="Cocktail Party" required class="form-control">
+                            <datalist id="new-event-types">
+                                <option value="Birthday Party">
+                                <option value="Bar Mitzvah">
+                                <option value="Bat Mitzvah">
+                                <option value="Cocktail Party">
+                                <option value="Celebration">
+                                <option value="Concert">
+                                <option value="Conference">
+                                <option value="Confirmation">
+                                <option value="Competition">
+                                <option value="Fair">
+                                <option value="Festival">
+                                <option value="Holiday">
+                                <option value="Meeting">
+                                <option value="Quinceañera">
+                                <option value="Reunion">
+                                <option value="Seminar">
+                                <option value="Wedding">
+                            </datalist>
+                            <div id="new-event-type-error" data-error-for="new-event-type" class="validation-error text-danger invisible"></div>
+                        </div>
+
+                        <!-- EVENT OPTIONAL MESSAGE -->
+                        <div class="form-group">
+                            <label class="control-label" for="new-event-message">In your own words</label>
+                            <textarea id="new-event-message" name="new-event-message" rows="4" cols="80" placeholder="It's that time again! Bring your best bounty and bodacious selfs to Buddy's Bi-annual Big Bash." maxlength="1024" class="form-control"></textarea>
+                            <div id="new-event-message-error" data-error-for="new-event-message" class="validation-error text-warning invisible"></div>
+                        </div>
+
+                    </fieldset>
+
+                    <fieldset title="When">
+                        <legend>When</legend>
+
+                        <!-- START -->
+                        <div class="form-group">
+                            <label class="control-label" for="new-event-start">When's it start?</label>
+                            <input id="new-event-start" type="text" name="new-event-start" required class="input-datetime-local form-control" placeholder="2016-08-28 07:30 PM">
+                            <div id="new-event-start-error" data-error-for="new-event-start" class="validation-error text-danger invisible"></div>
+                        </div>
+
+                        <!-- END -->
+                        <div class="form-group">
+                            <label class="control-label" for="new-event-end">When's it end?</label>
+                            <input id="new-event-end" type="text" name="new-event-end" required class="input-datetime-local form-control" placeholder="2016-08-28 07:30 PM">
+                            <div id="new-event-end-error" data-error-for="new-event-end" class="validation-error text-danger invisible"></div>
+                        </div>
+
+                    </fieldset>
+
+                    <fieldset title="Who">
+                        <legend>Who</legend>
+
+                        <!-- EVENT HOST -->
+                        <div class="form-group">
+                            <label class="control-label" for="new-event-host">Who's hosting?</label>
+                            <input id="new-event-host" type="text" name="new-event-host" placeholder="Buddy Bigshot, LLC" required maxlength="64" class="form-control">
+                            <div id="new-event-host-error" data-error-for="new-event-host" class="validation-error text-danger invisible"></div>
+                        </div>
+
+                        <!-- EVENT GUESTS LIST -->
+                        <div class="form-group">
+
+                            <label class="control-label" for="new-event-guest">Who's invited?</label>
+
+                            <ul id="new-event-guest-list">
+                                <li>
+                                    <div id="email-list-editor">
+                                        <label class="control-label block required" for="new-event-guest">Guest Emails</label>
+                                        <input id="new-event-guest" class="form-control form-control-inline" type="email" name="new-event-guest" placeholder="you@there.com">
+                                        <button id="new-event-guest-add-btn" class="btn btn-link btn-in-form" type="button"></button>
+                                        <div id="new-event-guest-error" data-error-for="new-event-guest" class="validation-error text-danger invisible"></div>
+                                    </div>
+                                </li>
+                            </ul>
+
+                        </div>
+
+                    </fieldset>
+
+                    <fieldset title="Where">
+                        <legend>Where</legend>
+
+                        <!-- EVENT LOCATION -->
+                        <div class="form-group">
+                            <label class="control-label" for="new-event-location">Where's it at?</label>
+                            <input id="new-event-location" type="text" name="new-event-location" placeholder="Buddy's Bar" required maxlength="64" class="form-control">
+                            <div id="new-event-location-error" data-error-for="new-event-location" class="validation-error text-danger invisible"></div>
+                        </div>
+
+                    </fieldset>
+
+                    <!-- CREATE EVENT BUTTON -->
+                    <button id="btn-event-create" class="btn btn-primary" type="submit">
+                        Create Event
+                    </button>
+
+                    <!-- CANCEL EVENT CREATION BUTTON -->
+                    <button id="btn-event-create-cancel" class="pull-right btn btn-link" type="button">
+                        <span class="text-warning">Cancel</span>
+                    </button>
+
+                </form>
+            </div>
+
+            <!-- EVENTS LIST -->
+            <div id="event-list-container" class="event-list-container">
+
+                <h2 class="event-list-header">Events</h2>
+
+                <!-- NEW EVENT PLACEHOLDER WIDGET -->
+                <div id="event-new-item-placeholder" class="event-list-item card card-1">
+                    <button id="event-new-btn" class="event-new-btn btn btn-primary" type="button" title='add event'>
+                        <span><i class="fa fa-plus btn-glyph" aria-hidden="true"></i>Add Event</span>
+                    </button>
+                </div>
+
+                <!-- EVENT LIST WIDGET -->
+                <ul id="event-list" class="event-list"></ul>
+
+            </div>
+
+        </section>
+
+    </main>
+
+    <!-- 3RD-PARTY SCRIPTS -->
+    <script src="https://code.jquery.com/jquery-3.1.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.14.1/moment.min.js"></script>
+    <script src="http://isaaccambron.com/twix.js/twix.js/dist/twix.min.js"></script>
+
+    <!-- CUSTOM APPLICATION SCRIPTS -->
+    <!-- ReSharper disable once Html.PathError -->
+    <script src="js/app.min.js"></script>
+</body>
+
+</html>
