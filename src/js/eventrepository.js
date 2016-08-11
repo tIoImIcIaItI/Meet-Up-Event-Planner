@@ -100,5 +100,5 @@
 
 	})();
 
-// ReSharper disable once ThisInGlobalContext
+	// ReSharper disable once ThisInGlobalContext
 }(this));

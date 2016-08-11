@@ -22,7 +22,7 @@
 
 	subclass(EventFormViewModel, FormViewModel);
 
-	EventFormViewModel.prototype._createWidgetForEmail = function(email) {
+	EventFormViewModel.prototype._createWidgetForEmail = function (email) {
 		var that = this;
 
 		// Create a widget for the guest email
@@ -43,21 +43,25 @@
 	};
 
 	// Adds an email widget to the guest list in the DOM
-	EventFormViewModel.prototype._renderEmailInList = function(widget) {
+	EventFormViewModel.prototype._renderEmailInList = function (widget) {
 
 		document.getElementById('new-event-guest-list').
 			appendChild(widget.render());
 	};
 
-	// Returns an event view model from the form's input values
+	// Returns an event view model from the form's validated input values
 	EventFormViewModel.prototype.newEventFrom = function () {
+
+		var start = moment(document.getElementById('new-event-start').value);
+		var durationHours = parseFloat(document.getElementById('new-event-duration').value);
+		var end = start.clone().add(durationHours, 'h');
 
 		return new EventViewModel({
 			title: document.getElementById('new-event-name').value,
 			type: document.getElementById('new-event-type').value,
 			host: document.getElementById('new-event-host').value,
-			start: moment(document.getElementById('new-event-start').value).format(timestampFormat),
-			end: moment(document.getElementById('new-event-end').value).format(timestampFormat),
+			start: start.format(timestampFormat),
+			end: end.format(timestampFormat),
 			location: document.getElementById('new-event-location').value,
 			message: document.getElementById('new-event-message').value,
 			guests: this.guestEmails.map(function (widget) { return widget.email; })
@@ -67,11 +71,15 @@
 	// Populates the form's inputs with values from an event view model
 	EventFormViewModel.prototype.populateFrom = function (event) {
 
+		var start = moment(event.start);
+		var duration = start.twix(moment(event.end)).length('hours');
+
+
 		document.getElementById('new-event-name').value = event.title;
 		document.getElementById('new-event-type').value = event.type;
 		document.getElementById('new-event-host').value = event.host;
-		document.getElementById('new-event-start').value = event.start;
-		document.getElementById('new-event-end').value = event.end;
+		document.getElementById('new-event-start').value = start.format('LLLL');
+		document.getElementById('new-event-duration').value = duration;
 		document.getElementById('new-event-location').value = event.location;
 		document.getElementById('new-event-message').value = event.message;
 
@@ -85,7 +93,7 @@
 		FormViewModel.prototype.reset.call(this);
 
 		// Remove the guest emails from the DOM
-		this.guestEmails.forEach(function(widget){
+		this.guestEmails.forEach(function (widget) {
 			widget.unrender();
 		});
 
@@ -99,25 +107,32 @@
 
 		var emailEl = document.getElementById('new-event-guest');
 		var startEl = document.getElementById('new-event-start');
-		var endEl = document.getElementById('new-event-end');
+		var durationEl = document.getElementById('new-event-duration');
+
+		var minDuration = parseFloat(durationEl.getAttribute('min').value);
+		minDuration = minDuration === NaN ? 1 : minDuration;
+
+		var maxDuration = parseFloat(durationEl.getAttribute('max').value);
+		maxDuration = maxDuration === NaN ? 24 : maxDuration;
+
 
 		// SOURCE: http://stackoverflow.com/questions/46155/validate-email-address-in-javascript
 		function validateEmail(email) {
 
-		    var re = /^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
+			var re = /^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
 
-		    return re.test(email);
+			return re.test(email);
 		}
 
 		// Permit empty, or a valid email
-		function updateEmailValidity () {
+		function updateEmailValidity() {
 
 			var email = emailEl.value;
 
 			if (email && email.length > 0) {
 
 				if (!validateEmail(email))
-					emailEl.setCustomValidity('Enter a guest\'s email address, for example you@there.com');
+					emailEl.setCustomValidity('Enter a guest\'s email address.');
 				else
 					emailEl.setCustomValidity('');
 
@@ -135,7 +150,7 @@
 
 			if (!that.guestEmails || that.guestEmails.length < 1) {
 
-				emailEl.setCustomValidity('Enter a guest\'s email address, for example you@there.com');
+				emailEl.setCustomValidity('Enter a guest\'s email address.');
 
 				that.updateValidationErrorState(emailEl);
 
@@ -145,40 +160,62 @@
 			return true;
 		}
 
-		function updateDateRangeValidity() {
+		// Ensure the event is not in the past
+		function updateStartValidity() {
 
-			// Empty range is handled by required attribute
-			if (!startEl.value && !endEl.value)
+			// Empty value is handled by required attribute
+			if (!startEl.value)
 				return true;
 
 			var now = moment(); // TODO: inject for testability
 			var start = moment(startEl.value);
-			var end = moment(endEl.value);
 
 			if (start.isValid()) {
 
 				// Ensure the start date occurs in the future
 				if (now.isAfter(start)) {
 
-					startEl.setCustomValidity('The event cannot begin in the past');
+					startEl.setCustomValidity('The event cannot begin in the past.');
 
 					that.updateValidationErrorState(startEl);
 
 					return false;
 				}
+			}
 
-				if (end.isValid()) {
+			return true;
+		}
 
-					// Ensure the end date occurs after the start date
-					if (start.isAfter(end)) {
+		// Ensure the event lasts between 1 and 24 hours.
+		// Not all browsers (mobile) will respect the min and max attributes on 'number' inputs.
+		// Note that we intend to limit the choices to integral hours
+		// in the picker (step = 1) for a simpler UX, but non-integral values are not prohibited.
+		function updateDurationValidity() {
 
-						endEl.setCustomValidity('The event cannot end before it starts');
+			// Empty value is handled by required attribute
+			if (!durationEl.value)
+				return true;
 
-						that.updateValidationErrorState(endEl);
+			var hours = parseFloat(durationEl.value);
 
-						return false;
-					}
-				}
+			// Ensure the user entered a number
+			if (hours === NaN) {
+
+				durationEl.setCustomValidity('Please enter a number of hours.');
+
+				that.updateValidationErrorState(durationEl);
+
+				return false;
+			}
+
+			// Ensure the user entered a number within the allowed range
+			if (hours < minDuration || hours > maxDuration) {
+
+				durationEl.setCustomValidity('Please enter a number of hours not less than 1 nor more than 24.');
+
+				that.updateValidationErrorState(durationEl);
+
+				return false;
 			}
 
 			return true;
@@ -189,14 +226,15 @@
 			'blur',
 			updateEmailValidity);
 
-		// Custom validate the datetime fields on blur
+		// Custom validate the start field on blur
 		startEl.addEventListener(
 			'blur',
-			updateDateRangeValidity);
+			updateStartValidity);
 
-		endEl.addEventListener(
+		// Custom validate the duration field on blur
+		durationEl.addEventListener(
 			'blur',
-			updateDateRangeValidity);
+			updateDurationValidity);
 
 		// Add an icon to the add email button
 		var addGuestButton = document.getElementById('new-event-guest-add-btn');
@@ -204,7 +242,7 @@
 
 		// Respond to the add email button
 		document.getElementById('new-event-guest-add-btn').addEventListener(
-			'click', function() {
+			'click', function () {
 
 				// Force validation
 				emailEl.focus();
@@ -252,8 +290,11 @@
 				isValid &= input.validity.valid;
 			});
 
-			// Check the datetime range
-			updateDateRangeValidity();
+			// Check the start
+			updateStartValidity();
+
+			// Check the duration
+			updateDurationValidity();
 
 			// Ensure we have at least one guest's email
 			isValid &= updateGuestsValidity();
@@ -265,5 +306,5 @@
 
 	global.EventFormViewModel = EventFormViewModel;
 
-// ReSharper disable once ThisInGlobalContext
+	// ReSharper disable once ThisInGlobalContext
 }(this, document));

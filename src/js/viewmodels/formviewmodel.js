@@ -264,5 +264,5 @@
 
 	global.FormViewModel = FormViewModel;
 
-// ReSharper disable once ThisInGlobalContext
+	// ReSharper disable once ThisInGlobalContext
 }(this, alert));

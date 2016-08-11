@@ -24,5 +24,5 @@
 
 	global.LoginFormViewModel = LoginFormViewModel;
 
-// ReSharper disable once ThisInGlobalContext
+	// ReSharper disable once ThisInGlobalContext
 }(this, document));

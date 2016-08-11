@@ -109,7 +109,7 @@
 	};
 
 	// Creates a fully-configured element from a Font Awesome glyph
-	global.newLabelGlyph = function(faName, title) {
+	global.newLabelGlyph = function (faName, title) {
 
 		var glyph = newTextElement('i', '');
 		glyph.classList.add('fa');
@@ -123,7 +123,7 @@
 	};
 
 	// Creates and appends a Font Awesome glyph as a child of the given element
-	global.appendGlyph = function(parent, faName, title) {
+	global.appendGlyph = function (parent, faName, title) {
 
 		var glyph = newLabelGlyph(faName, title);
 		parent.appendChild(glyph);
@@ -132,13 +132,20 @@
 	};
 
 	// Creates and prepends a Font Awesome glyph as a child of the given element
-	global.prependGlyph = function(parent, faName, title) {
+	global.prependGlyph = function (parent, faName, title) {
 
 		var glyph = newLabelGlyph(faName, title);
 		parent.insertBefore(glyph, parent.firstChild);
 
 		return glyph;
 	};
+
+	// While the internet debates the multitude of ways to accomplish this,
+	// we'll choose the simplest solution for now.
+	global.removeAllChildren = function (el) {
+
+		el.innerHTML = '';
+	}
 
 	// Returns a random-ish integer between min (included) and max (included)
 	// Using Math.round() will give you a non-uniform distribution!
@@ -170,5 +177,5 @@
 	// TODO: put this someplace better
 	global.timestampFormat = 'YYYY-MM-DDTHH:mm:ss';
 
-// ReSharper disable once ThisInGlobalContext
+	// ReSharper disable once ThisInGlobalContext
 }(this));

@@ -20,34 +20,34 @@
 	color: #ddf;
 }
 
-.btn-link.btn-in-form {
-	color: #668;
-}
+	.btn-link.btn-in-form {
+		color: #668;
+	}
 
 /* ---------------------------------------------------------------------------*/
 /* APPLICATION STYLES */
 
 /* PALLETTE
-    #eeeef9
-    #fafdff
-    #fafaff
-    #3a536d
-    #668
-    #666
-    #fff
-    #333
-    #024
-    red
-    green
+	#eeeef9
+	#fafdff
+	#fafaff
+	#3a536d
+	#668
+	#666
+	#fff
+	#333
+	#024
+	red
+	green
 
-    ADAPTED FROM: https://www.invisionapp.com/relate
-    -webkit-linear-gradient(315deg,#76baf8 0,#ac6bfe 100%) #76baf8;
-    linear-gradient(135deg,#76baf8 0,#ac6bfe 100%) #76baf8;
+	ADAPTED FROM: https://www.invisionapp.com/relate
+	-webkit-linear-gradient(315deg,#76baf8 0,#ac6bfe 100%) #76baf8;
+	linear-gradient(135deg,#76baf8 0,#ac6bfe 100%) #76baf8;
 */
 
 * {
-    /* ReSharper disable once CssBrowserCompatibility */
-    box-sizing: border-box; /* fallback to whatever */
+	/* ReSharper disable once CssBrowserCompatibility */
+	box-sizing: border-box; /* fallback to whatever */
 }
 
 html {
@@ -63,8 +63,8 @@ body {
 	font-family: 'Chivo', sans-serif;
 	color: #024;
 	background-color: transparent;
-    /* ReSharper disable once CssBrowserCompatibility */
-    min-width: 350px; /* fallback to nothing */
+	/* ReSharper disable once CssBrowserCompatibility */
+	min-width: 350px; /* fallback to nothing */
 	max-width: 60em;
 	min-height: 100%;
 	width: 100%;
@@ -103,20 +103,20 @@ label {
 	color: #3a536d;
 }
 
-label.required:after {
-	content: ' *';
-	color: #668;
-}
+	label.required:after {
+		content: ' *';
+		color: #668;
+	}
 
 ul {
 	margin: 0;
 	padding: 0;
-    list-style: none;
+	list-style: none;
 }
 
 input,
 textarea {
-    display: block;
+	display: block;
 }
 
 section {
@@ -150,14 +150,14 @@ form {
 
 .page-header-text {
 	font-family: 'Montserrat Alternates', serif;
-    /* ReSharper disable once CssBrowserCompatibility */
+	/* ReSharper disable once CssBrowserCompatibility */
 	font-variant: small-caps; /* fallback to nothing */
 	font-weight: 700;
 	letter-spacing: 0.15em;
-    /* ReSharper disable once CssBrowserCompatibility */
-    /* ReSharper disable RequiresFallbackColor */
+	/* ReSharper disable once CssBrowserCompatibility */
+	/* ReSharper disable RequiresFallbackColor */
 	text-shadow: 0.08em 0.08em 0.3em rgba(0,0,0,.33); /* fallback to nothing */
-    /* ReSharper restore RequiresFallbackColor */
+	/* ReSharper restore RequiresFallbackColor */
 }
 
 .user-info {
@@ -184,14 +184,14 @@ form {
 	width: 1.25em;
 	margin: 0.25em;
 	margin-left: 0;
-    text-align: center;
+	text-align: center;
 }
 
 .event-label-glyph {
 	width: 1.25em;
 	margin: 0.25em;
-    margin-left: 0;
-    text-align: center;
+	margin-left: 0;
+	text-align: center;
 	color: #668;
 }
 
@@ -209,16 +209,16 @@ form {
 	border-left: 4px solid #3a536d;
 }
 
-.event-list-item:hover,
-.event-list-item:focus {
-	background-color: #fff;
-	border-left: 4px solid #ddf;
-    /* ReSharper disable once CssBrowserCompatibility */
-    /* ReSharper disable RequiresFallbackColor */
-  	box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23); /* fallback to nothing */
-    /* ReSharper restore RequiresFallbackColor */
-	outline: none; /* replaced with styling above */
-}
+	.event-list-item:hover,
+	.event-list-item:focus {
+		background-color: #fff;
+		border-left: 4px solid #ddf;
+		/* ReSharper disable once CssBrowserCompatibility */
+		/* ReSharper disable RequiresFallbackColor */
+		box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23); /* fallback to nothing */
+		/* ReSharper restore RequiresFallbackColor */
+		outline: none; /* replaced with styling above */
+	}
 
 .event-type {
 	color: #666;
@@ -230,15 +230,15 @@ form {
 	border-bottom: 0.66px solid #ddf;
 	text-align: left;
 	letter-spacing: 0.10em;
-    /* ReSharper disable once CssBrowserCompatibility */
-    /* ReSharper disable RequiresFallbackColor */
-	text-shadow: 0.05em 0.05em 0.15em rgba(0,0,0,.33) /* fallback to nothing */
-    /* ReSharper restore RequiresFallbackColor */
+	/* ReSharper disable once CssBrowserCompatibility */
+	/* ReSharper disable RequiresFallbackColor */
+	text-shadow: 0.05em 0.05em 0.15em rgba(0,0,0,.33); /* fallback to nothing */
+	/* ReSharper restore RequiresFallbackColor */
 }
 
 .event-value-secondary {
 	margin-left: 1.35em;
- }
+}
 
 .event-starts-about,
 .event-ends-about {
@@ -269,30 +269,38 @@ time,
 	width: auto;
 }
 
+#new-event-guest {
+	width: 89%;
+}
+
+#new-event-duration {
+	width: 90%;
+}
+
 .guest-item {
 	background-color: #eeeef9;
 	padding-left: 1em;
 	display: inline-block;
 	margin: 0.25em;
 	border-left: 4px solid #3a536d;
-    /* ReSharper disable once CssBrowserCompatibility */
+	/* ReSharper disable once CssBrowserCompatibility */
 	border-radius: 4px; /* fallback to nothing */
-    /* ReSharper disable once CssBrowserCompatibility */
-    /* ReSharper disable RequiresFallbackColor */
+	/* ReSharper disable once CssBrowserCompatibility */
+	/* ReSharper disable RequiresFallbackColor */
 	box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24); /* fallback to nothing */
-    /* ReSharper restore RequiresFallbackColor */
+	/* ReSharper restore RequiresFallbackColor */
 }
 
-.guest-item:hover,
-.guest-item:focus {
-	background-color: #fff;
-	border-left: 4px solid #ddf;
-    /* ReSharper disable once CssBrowserCompatibility */
-    /* ReSharper disable RequiresFallbackColor */
-	box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23); /* fallback to nothing */
-    /* ReSharper restore RequiresFallbackColor */
-	outline: none; /* replaced with styling above */
-}
+	.guest-item:hover,
+	.guest-item:focus {
+		background-color: #fff;
+		border-left: 4px solid #ddf;
+		/* ReSharper disable once CssBrowserCompatibility */
+		/* ReSharper disable RequiresFallbackColor */
+		box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23); /* fallback to nothing */
+		/* ReSharper restore RequiresFallbackColor */
+		outline: none; /* replaced with styling above */
+	}
 
 .guest-email-address {
 	margin-right: 0.5em;
@@ -305,46 +313,46 @@ time,
 }
 
 .pwd-ex {
-    color: #024; /* match input field text color for better associativity */
+	color: #024; /* match input field text color for better associativity */
 }
 
 .pwd-check {
-    margin-left: 1em;
+	margin-left: 1em;
 }
 
-.pwd-check.text-danger:before {
-    content: "\f05e"; /* ban/block */
-    font-family: FontAwesome;
-    font-style: normal;
-    font-weight: normal;
-    text-decoration: inherit;
-    padding-right: 0.5em;
-}
+	.pwd-check.text-danger:before {
+		content: "\f05e"; /* ban/block */
+		font-family: FontAwesome;
+		font-style: normal;
+		font-weight: normal;
+		text-decoration: inherit;
+		padding-right: 0.5em;
+	}
 
-.pwd-check.text-success:before {
-    content: "\f00c"; /* check */
-    font-family: FontAwesome;
-    font-style: normal;
-    font-weight: normal;
-    text-decoration: inherit;
-    padding-right: 0.5em;
-}
+	.pwd-check.text-success:before {
+		content: "\f00c"; /* check */
+		font-family: FontAwesome;
+		font-style: normal;
+		font-weight: normal;
+		text-decoration: inherit;
+		padding-right: 0.5em;
+	}
 
 /* SOURCE: https://developers.google.com/web/fundamentals/design-and-ui/input/forms/provide-real-time-validation?hl=en */
 /* fallback to nothing */
 /* ReSharper disable CssBrowserCompatibility */
 form input.dirty:not(:focus):valid,
 form textarea.dirty:not(:focus):valid {
-/* ReSharper restore CssBrowserCompatibility */
-    border-color: green;
+	/* ReSharper restore CssBrowserCompatibility */
+	border-color: green;
 }
 
 /* fallback to nothing */
 /* ReSharper disable CssBrowserCompatibility */
 form input.dirty:not(:focus):invalid,
 form textarea.dirty:not(:focus):invalid {
-/* ReSharper restore CssBrowserCompatibility */
-    border-color: red;
+	/* ReSharper restore CssBrowserCompatibility */
+	border-color: red;
 }
 
 /* ---------------------------------------------------------------------------*/
@@ -363,7 +371,6 @@ form textarea.dirty:not(:focus):invalid {
 		width: 32px;
 		height: 32px;
 	}
-
 }
 
 /* ---------------------------------------------------------------------------*/
@@ -402,5 +409,4 @@ form textarea.dirty:not(:focus):invalid {
 	.user-avatar-img {
 		display: none;
 	}
-
 }

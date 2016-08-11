@@ -6,8 +6,10 @@
 /*globals LoadErrorWidget, SaveErrorWidget */
 /*globals timestampFormat */
 
+// TODO: find, use an accessible 'toast' library for success/error notifications.
+// TODO: keyboard navigation needs to see event list, and guest list, as 'one thing' (i.e. tab nav should skip over list items, unless list widgets are navigated into).
+
 // Singleton application module
-// TODO: find, use an accessible 'toast' library
 (function (global, document) {
 	'use strict';
 
@@ -99,13 +101,13 @@
 	app.prependEventToList = function (event) {
 
 		document.getElementById('event-list').
-		prependChild(event.render());
+			prependChild(event.render());
 	};
 
 	app.addEventToList = function (event) {
 
 		document.getElementById('event-list').
-		appendChild(event.render());
+			appendChild(event.render());
 	};
 
 	app.showLoginForm = function (dontScroll) {
@@ -150,6 +152,7 @@
 		if (isLoggedIn) {
 
 			// Start loading this user's events
+			app.clearAllEvents();
 			app.loadEvents();
 
 			// Ensure the user name is set
@@ -164,6 +167,8 @@
 			// Ensure the authentication forms are clean and ready for input
 			app.accountFormVm.reset();
 			app.loginFormVm.reset();
+
+			app.clearAllEvents();
 		}
 
 		// Show the authentication UI only when the user is logged out
@@ -215,6 +220,16 @@
 
 		scrollToTop();
 	};
+
+	app.clearAllEvents = function () {
+
+		// Remove event DOM renderings
+		removeAllChildren(
+			document.getElementById('event-list'));
+
+		// Remove event view models
+		app.events = [];
+	}
 
 	// Start loading the user's events
 	app.loadEvents = function () {
@@ -276,7 +291,7 @@
 		app.saveError = new SaveErrorWidget('event-save-error');
 
 		app.accountFormVm.init();
-		app.eventFormVm .init();
+		app.eventFormVm.init();
 
 		// Handle form submissions
 
@@ -338,10 +353,6 @@
 			return false; // prevent actual form submit
 		};
 
-		app.eventFormVm.postFormSubmit = function () {
-
-		};
-
 
 		// Wire up the buttons to their handlers
 
@@ -367,9 +378,9 @@
 
 		// Clicking on an event gives it focus
 		arrayFrom(document.getElementsByClassName(
-			'event-list-item')).forEach(function(el) {
+			'event-list-item')).forEach(function (el) {
 				el.addEventListener(
-					'click', function(evt) {
+					'click', function (evt) {
 						evt.target.focus();
 					});
 			});
@@ -391,5 +402,5 @@
 
 	global.app = app;
 
-// ReSharper disable once ThisInGlobalContext
+	// ReSharper disable once ThisInGlobalContext
 }(this, document));

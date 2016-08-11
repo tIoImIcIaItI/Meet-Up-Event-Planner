@@ -57,5 +57,5 @@
 
 	global.AccountFormViewModel = AccountFormViewModel;
 
-// ReSharper disable once ThisInGlobalContext
+	// ReSharper disable once ThisInGlobalContext
 }(this));

@@ -79,7 +79,7 @@
 	// Evaluate the current password value and update the validation states of all hints,
 	// and the overall validation state.
 	PasswordHelperWidget.prototype._updatePasswordValidation = function () {
-		
+
 		var password = this._pwdEl.value;
 		var isValid = false;
 
@@ -129,7 +129,7 @@
 		this._allCheckEls = [this._pwdNumEl, this._pwdLowerEl, this._pwdUpperEl, this._pwdSpecialEl, this._pwdLengthEl];
 
 		// Update validation state on input and blur
-		this._pwdEl.addEventListener('input', function() { that._updatePasswordValidation(); });
+		this._pwdEl.addEventListener('input', function () { that._updatePasswordValidation(); });
 		this._pwdEl.addEventListener('blur', function () { that._updatePasswordValidation(); });
 
 		// Choose new values for the hint examples

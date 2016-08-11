@@ -46,7 +46,7 @@
 		frag.appendChild(guest);
 
 		removeBtn.addEventListener(
-			'click', function() {
+			'click', function () {
 
 				if (!that.onRemove || !!!that.onRemove(that))
 					that.unrender();
@@ -57,5 +57,5 @@
 
 	global.EmailAddressWidget = EmailAddressWidget;
 
-// ReSharper disable once ThisInGlobalContext
+	// ReSharper disable once ThisInGlobalContext
 }(this, document));

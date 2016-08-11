@@ -30,5 +30,5 @@
 
 	global.LoadErrorWidget = LoadErrorWidget;
 
-// ReSharper disable once ThisInGlobalContext
+	// ReSharper disable once ThisInGlobalContext
 }(this));

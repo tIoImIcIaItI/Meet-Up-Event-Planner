@@ -15,7 +15,7 @@
 	Widget.prototype.constructor = Widget;
 
 	// Override this function to return an insertable DOM element or document fragment
-	Widget.prototype.render = function () {};
+	Widget.prototype.render = function () { };
 
 	// By default we simply remove the element with our ID from the DOM
 	Widget.prototype.unrender = function () {
@@ -28,5 +28,5 @@
 
 	global.Widget = Widget;
 
-// ReSharper disable once ThisInGlobalContext
+	// ReSharper disable once ThisInGlobalContext
 }(this, document));

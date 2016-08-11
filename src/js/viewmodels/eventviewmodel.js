@@ -124,17 +124,17 @@
 			implicitMinutes: true,
 			implicitDate: false,
 			implicitYear: false
-				// yearFormat: 'YYYY',
-				// monthFormat: 'MMM',
-				// weekdayFormat: 'ddd',
-				// dayFormat: 'D',
-				// meridiemFormat: 'A',
-				// hourFormat: momentHourFormat,
-				// minuteFormat: 'mm',
-				// allDay: 'all day',
-				// explicitAllDay: false,
-				// lastNightEndsAt: 0,
-				// template: Twix.formatTemplate
+			// yearFormat: 'YYYY',
+			// monthFormat: 'MMM',
+			// weekdayFormat: 'ddd',
+			// dayFormat: 'D',
+			// meridiemFormat: 'A',
+			// hourFormat: momentHourFormat,
+			// minuteFormat: 'mm',
+			// allDay: 'all day',
+			// explicitAllDay: false,
+			// lastNightEndsAt: 0,
+			// template: Twix.formatTemplate
 		});
 
 		var start = newTextElement('time', when);
@@ -180,5 +180,5 @@
 
 	global.EventViewModel = EventViewModel;
 
-// ReSharper disable once ThisInGlobalContext
+	// ReSharper disable once ThisInGlobalContext
 }(this));
