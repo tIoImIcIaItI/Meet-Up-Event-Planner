@@ -41,12 +41,12 @@
 		<div id="user-info" class="pull-right hidden user-info-container">
 
 			<div class="pull-right user-avatar">
-				<img id="user-avatar-img" class="pull-right user-avatar-img card-1" alt="" />
+				<img id="user-avatar-img" class="pull-right user-avatar-img card-1" alt="" /><!--no-alt-decorative--><!--no-src-dynamic-->
 			</div>
 
 			<div class="pull-right">
 				<div id="user-name" class="user-name"></div>
-				<button id="logout-btn" class="pull-right btn btn-link logout-btn" type="button" title="log out">log out</button>
+				<button id="logout-btn" class="pull-right btn btn-link logout-btn" type="button">log out</button>
 			</div>
 
 		</div>
@@ -139,9 +139,9 @@
 							<div id="account-password-hint-error" data-error-for="account-password-hint" class="validation-error text-danger invisible"></div>
 
 							<div class="pwd-check-header" aria-hidden="true">Your password must contain: </div>
-							<div id="pwd-check-number" class="pwd-check" aria-hidden="true">a number for example <span class="pwd-ex">4</span></div>
-							<div id="pwd-check-lower" class="pwd-check" aria-hidden="true">a lowercase letter for example <span class="pwd-ex">d</span></div>
-							<div id="pwd-check-upper" class="pwd-check" aria-hidden="true">an uppercase letter for example <span class="pwd-ex">D</span></div>
+							<div id="pwd-check-number" class="pwd-check" aria-hidden="true">a number like <span class="pwd-ex">4</span></div>
+							<div id="pwd-check-lower" class="pwd-check" aria-hidden="true">a lowercase letter like <span class="pwd-ex">d</span></div>
+							<div id="pwd-check-upper" class="pwd-check" aria-hidden="true">an uppercase letter like <span class="pwd-ex">D</span></div>
 							<div id="pwd-check-special" class="pwd-check" aria-hidden="true">only letters, numbers or the underscore <span class="pwd-ex">_</span></div>
 							<div id="pwd-check-length" class="pwd-check" aria-hidden="true">at least 8 but not more than 16 characters</div>
 
@@ -272,18 +272,14 @@
 						<!-- EVENT GUESTS LIST -->
 						<div class="form-group">
 
-							<label class="control-label" for="new-event-guest">Who's invited?</label>
+							<div id="email-list-editor">
+								<label class="control-label block required" for="new-event-guest">Who's invited?</label>
+								<input id="new-event-guest" class="form-control form-control-inline" type="email" name="new-event-guest" placeholder="you@there.com">
+								<button id="new-event-guest-add-btn" class="btn btn-sm btn-in-form" type="button"></button>
+								<div id="new-event-guest-error" data-error-for="new-event-guest" class="validation-error text-danger invisible"></div>
+							</div>
 
-							<ul id="new-event-guest-list">
-								<li>
-									<div id="email-list-editor">
-										<label class="control-label block required" for="new-event-guest">Guest Emails</label>
-										<input id="new-event-guest" class="form-control form-control-inline" type="email" name="new-event-guest" placeholder="you@there.com">
-										<button id="new-event-guest-add-btn" class="btn btn-link btn-in-form" type="button"></button>
-										<div id="new-event-guest-error" data-error-for="new-event-guest" class="validation-error text-danger invisible"></div>
-									</div>
-								</li>
-							</ul>
+							<ul id="new-event-guest-list" tabindex="-1"></ul>
 
 						</div>
 
@@ -322,7 +318,7 @@
 				<!-- NEW EVENT PLACEHOLDER WIDGET -->
 				<div id="event-new-item-placeholder" class="event-list-item card card-1">
 					<button id="event-new-btn" class="event-new-btn btn btn-primary" type="button" title="add event">
-						<span><i class="fa fa-plus btn-glyph" aria-hidden="true"></i>Add Event</span>
+						<span><i class="fa fa-plus glyph-btn" aria-hidden="true"></i>Add Event</span>
 					</button>
 				</div>
 

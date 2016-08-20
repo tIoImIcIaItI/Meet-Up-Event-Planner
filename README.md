@@ -52,24 +52,46 @@ Refresh the page to reset the app to its initial state.
 
 Form input validation occurs on blur and submit.
 Each form input group will change color and display an error message if validation fails.
-Aria attributes have used to mark invalid fields.
+Aria attributes are used to mark invalid fields.
 
 Browsers that do not block invalid form submittal will instead display an alert.
 All browsers will show all validation errors if an invalid form submit is attempted.
 
+### Accessibility
+
+Aria attributes and HTML semantic elements have been used throughout, for both static and dynamic content.
+Application error conditions are announced via the aria `alert` role.
+Selected list items receive the `aria-selected` attribute.
+Contrast has been verified sufficient.
+Visual states, icons, images, etc. are accessibly labeled.
+Tab order and inclusion has been managed such that only and all interactive elements are navigable.
+Interactive elements are of a minimum size.
+
+The guest email list supports the following features.
+
+- Once an item has been added, use `TAB` and `SHIFT-TAB` to enter the list from the previous and following form controls repespectively.
+Tabbing again will exit the list.
+- Once entered, the `UP` and `DOWN` arrow keys will move the selection to the previous and next items respectively.
+- On an item has been selected, the `RIGHT` and `LEFT` arrow keys will move focus to and from the delete button respectively.
+- Once focused, the delete button may be clicked with the `SPACE` key.
+- Clicking an item selects and focuses it.
+
 ### Error Handling
 
-Although all user and event data is stored in memory and loaded from hardcoded or input values, the event repository exposes an asynchronous (promise-based) API as one would expect from a real service component.
+Although all user and event data is stored in memory and loaded from hardcoded or input values, 
+the event repository exposes an asynchronous (promise-based) API as one would expect from a real service component.
 Any errors encountered attempting to load or save events will display an alert banner, marked up with aria.
 
 ### What's Missing From This Incomplete App
 
 - Editing or deleting events, once created, is not supported.
 - User inputs are not cleansed for HTML, script, etc. before being added to the data store or rendered in the browser.
-- Persistence is limited to the page's lifetime (i.e. is held in memory only).
+- Persistence of user-entered data is limited to the page's lifetime (i.e. is held in browser memory only).
 - No internationalization or localization; password checks, dates and times are en-us centric.
 - There are no limits on the number of events displayed (ex. paging very many events).
-- The login form does not authenticate the input user credentials; credentials are not stored even within the page's lifetime. Thus there is no error handling for authentication failures due to invalid user credentials (or password reset, etc.).
+- The login form does not authenticate the user's credentials; credentials are not stored even within the page's lifetime. 
+All users see the same data.
+There is no error handling for authentication failures due to invalid user credentials (or password reset, etc.).
 - There is no input for specifying a user avatar image source.
 - Deep-linking (routing) into the SPA's content or state is not supported.
 
@@ -93,3 +115,8 @@ The following sources were used in building the app and/or its execution.
 
 - Material Design-like Box Shadows: [sdthornton](https://codepen.io/sdthornton/pen/wBZdXq)
 - Design Inspiration: [Invision](https://www.invisionapp.com/relate)
+
+### Accessibility
+
+- Guest List: inspired by OpenAjax Alliance [Grid](http://www.oaa-accessibility.org/example/38/)
+[Toolbar](http://www.oaa-accessibility.org/example/19/)

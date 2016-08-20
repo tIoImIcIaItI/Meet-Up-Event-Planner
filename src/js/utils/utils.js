@@ -47,6 +47,14 @@
 		return Array.prototype.slice.call(arrayLike);
 	};
 
+	if (!Array.prototype.last) {
+		// ReSharper disable once NativeTypePrototypeExtending
+		Array.prototype.last = function () {
+			return this[this.length - 1];
+		};
+	};
+
+
 	// Consolidate steps used to wire up a sub-class's prototype.
 	// From what I've gleaned from other's countless online discussions, books, courses, etc.
 	// of this matter, this is the most complete set of steps needed to yield sensible answers
@@ -58,6 +66,8 @@
 		sub.prototype.base = base.prototype; // report being derived from the given base class
 		sub.prototype.constructor = sub; // report being constructed from this most-specific subclass
 	};
+
+
 
 	// DOM helper to remove an element from the tree
 	// ADAPTED FROM: http://stackoverflow.com/questions/3387427/remove-element-by-id
@@ -172,10 +182,29 @@
 		return choices[getRandomIntInclusive(0, choices.length - 1)];
 	};
 
+	// SOURCE: http://www.oaa-accessibility.org/example/19/
+	global.keyCodes = {
+		tab: 9,
+		enter: 13,
+		esc: 27,
+
+		space: 32,
+		pageup: 33,
+		pagedown: 34,
+		end: 35,
+		home: 36,
+
+		left: 37,
+		up: 38,
+		right: 39,
+		down: 40
+	};
+
 
 	// APPLICATION-SPECIFIC GLOBALS
 	// TODO: put this someplace better
 	global.timestampFormat = 'YYYY-MM-DDTHH:mm:ss';
+
 
 	// ReSharper disable once ThisInGlobalContext
 }(this));

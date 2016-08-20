@@ -106,7 +106,7 @@
 
 		var docFragment = document.createDocumentFragment();
 
-		var li = document.createElement('li');
+		var li = document.createElement('article');
 		li.setAttribute('data-id', this.id);
 		li.setAttribute('tabindex', '0'); // make focusable
 		li.classList.add('event-list-item');
@@ -173,7 +173,10 @@
 		li.appendChild(renderHost(this.host));
 		li.appendChild(renderGuests(this.guests));
 
-		docFragment.appendChild(li);
+		var actualLi = document.createElement('li');
+		actualLi.appendChild(li);
+
+		docFragment.appendChild(actualLi);
 
 		return docFragment;
 	};

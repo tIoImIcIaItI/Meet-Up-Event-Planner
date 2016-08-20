@@ -11,3 +11,11 @@ node_modules
 *.sln
 .vs
 *.user
+
+# ReSharper is a .NET coding add-in // SOURCE: https://github.com/github/gitignore/blob/master/VisualStudio.gitignore
+_ReSharper*/
+*.[Rr]e[Ss]harper
+*.DotSettings.user
+
+# Dev tools
+ngrok.exe

@@ -17,11 +17,16 @@
 }
 
 .btn-link {
-	color: #ddf;
+	color: #eef;
 }
 
-	.btn-link.btn-in-form {
-		color: #668;
+.btn-in-form {
+	color: #668;
+}
+
+	.btn-in-form:focus {
+		outline: 1px dotted #212121;
+		outline: 5px auto -webkit-focus-ring-color;
 	}
 
 /* ---------------------------------------------------------------------------*/
@@ -35,6 +40,8 @@
 	#668
 	#666
 	#fff
+	#ddf
+	#eef
 	#333
 	#024
 	red
@@ -74,7 +81,6 @@ h1 {
 	margin-top: 0.25em;
 	margin-bottom: 0.5em;
 	font-size: 4em;
-	letter-spacing: 110%;
 }
 
 h2 {
@@ -156,7 +162,7 @@ form {
 	letter-spacing: 0.15em;
 	/* ReSharper disable once CssBrowserCompatibility */
 	/* ReSharper disable RequiresFallbackColor */
-	text-shadow: 0.08em 0.08em 0.3em rgba(0,0,0,.33); /* fallback to nothing */
+	text-shadow: 0.08em 0.08em 0.3em rgba(0,0,0,0.33); /* fallback to nothing */
 	/* ReSharper restore RequiresFallbackColor */
 }
 
@@ -165,25 +171,26 @@ form {
 }
 
 .user-avatar-img {
-	margin: 0 0 0 0.5em;
+	margin: 0;
 }
 
 .user-name {
 	font-size: 0.9em;
 	text-align: right;
-	margin-top: 0.25em;
+	margin: 0;
+	padding: 0 0.5em;
 }
 
 .logout-btn {
 	margin: 0;
-	padding: 0;
+	padding: 0 0.5em;
 	color: #668;
 }
 
-.btn-glyph {
+.glyph-btn {
 	width: 1.25em;
 	margin: 0.25em;
-	margin-left: 0;
+	margin-left: -0.25em;
 	text-align: center;
 }
 
@@ -232,7 +239,7 @@ form {
 	letter-spacing: 0.10em;
 	/* ReSharper disable once CssBrowserCompatibility */
 	/* ReSharper disable RequiresFallbackColor */
-	text-shadow: 0.05em 0.05em 0.15em rgba(0,0,0,.33); /* fallback to nothing */
+	text-shadow: 0.05em 0.05em 0.15em rgba(0,0,0,0.33); /* fallback to nothing */
 	/* ReSharper restore RequiresFallbackColor */
 }
 
@@ -270,7 +277,7 @@ time,
 }
 
 #new-event-guest {
-	width: 89%;
+	width: 90%;
 }
 
 #new-event-duration {
@@ -291,8 +298,32 @@ time,
 	/* ReSharper restore RequiresFallbackColor */
 }
 
-	.guest-item:hover,
-	.guest-item:focus {
+	.guest-item:hover {
+		background-color: #fff;
+		border-left: 4px solid #ddf;
+		/* ReSharper disable once CssBrowserCompatibility */
+		/* ReSharper disable RequiresFallbackColor */
+		box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23); /* fallback to nothing */
+		/* ReSharper restore RequiresFallbackColor */
+		outline: none; /* replaced with styling above */
+	}
+
+	.guest-item[aria-selected=true]:focus {
+		background-color: #fff;
+		border-left: 4px solid #ddf;
+		/* ReSharper disable once CssBrowserCompatibility */
+		/* ReSharper disable RequiresFallbackColor */
+		box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23); /* fallback to nothing */
+		/* ReSharper restore RequiresFallbackColor */
+		outline: none; /* replaced with styling above */
+		border-color: #66afe9;
+		/* ReSharper disable once CssBrowserCompatibility */
+		/* ReSharper disable RequiresFallbackColor */
+		box-shadow: inset 0 1px 1px rgba(0,0,0,0.075),0 0 8px rgba(102,175,233,0.6); /* fallback to nothing */
+		/* ReSharper restore RequiresFallbackColor */
+	}
+
+	.guest-item[aria-selected=true] {
 		background-color: #fff;
 		border-left: 4px solid #ddf;
 		/* ReSharper disable once CssBrowserCompatibility */
