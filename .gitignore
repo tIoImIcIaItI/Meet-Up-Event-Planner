@@ -19,3 +19,5 @@ _ReSharper*/
 
 # Dev tools
 ngrok.exe
+/1. serve.bat
+/2. host.bat

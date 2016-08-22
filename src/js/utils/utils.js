@@ -200,6 +200,15 @@
 		down: 40
 	};
 
+	// SOURCE: http://stackoverflow.com/questions/46155/validate-email-address-in-javascript
+	global.validateEmail = function(email) {
+
+		var re = /^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
+
+		return re.test(email);
+	}
+
+
 
 	// APPLICATION-SPECIFIC GLOBALS
 	// TODO: put this someplace better

@@ -152,6 +152,26 @@
 		return true;
 	}
 
+	function parseDateFrom(input) {
+		return moment(
+			input.value,
+			['YYYY-MM-DD', 'YYYY/MM/DD', 'YYYY MM DD',
+			'YYYY-M-D', 'YYYY/M/D', 'YYYY M D'],
+			true).startOf('day');
+	}
+
+	function parseTimeOfDayFrom(date, input) {
+		return moment(
+			date.format('YYYY-MM-DDT') + input.value,
+			[
+				'YYYY-MM-DDTh:mm a', 'YYYY-MM-DDTh:mma',
+				'YYYY-MM-DDThmm a', 'YYYY-MM-DDThmma',
+				'YYYY-MM-DDTHH:mm', 'YYYY-MM-DDTHHmm'
+			],
+			true);
+	}
+
+
 	// Adds our events to a new guest widget
 	EventFormViewModel.prototype._wireUpEmailWidget = function (newWidget) {
 		var that = this;
@@ -239,8 +259,13 @@
 	// Returns an event view model from the form's validated input values
 	EventFormViewModel.prototype.newEventFrom = function () {
 
-		var start = moment(document.getElementById('new-event-start').value);
-		var durationHours = parseFloat(document.getElementById('new-event-duration').value);
+		var start = parseTimeOfDayFrom(
+			parseDateFrom(document.getElementById('new-event-start-date')),
+			document.getElementById('new-event-start-time'));
+
+		var durationHours = parseFloat(
+			document.getElementById('new-event-duration').value);
+
 		var end = start.clone().add(durationHours, 'h');
 
 		return new EventViewModel({
@@ -266,7 +291,8 @@
 		document.getElementById('new-event-name').value = event.title;
 		document.getElementById('new-event-type').value = event.type;
 		document.getElementById('new-event-host').value = event.host;
-		document.getElementById('new-event-start').value = start.format('LLLL');
+		document.getElementById('new-event-start-date').value = ''; // TODO
+		document.getElementById('new-event-start-time').value = ''; // TODO
 		document.getElementById('new-event-duration').value = duration;
 		document.getElementById('new-event-location').value = event.location;
 		document.getElementById('new-event-message').value = event.message;
@@ -294,11 +320,13 @@
 		this._nextGuestEmailId = 1;
 	};
 
+	// TODO: refactor date and time inputs into single widget
 	EventFormViewModel.prototype.init = function () {
 		var that = this;
 
 		var emailEl = document.getElementById('new-event-guest');
-		var startEl = document.getElementById('new-event-start');
+		var startDateEl = document.getElementById('new-event-start-date');
+		var startTimeEl = document.getElementById('new-event-start-time');
 		var durationEl = document.getElementById('new-event-duration');
 		that._guestList = document.getElementById('new-event-guest-list');
 
@@ -308,136 +336,185 @@
 		var maxDuration = parseFloat(durationEl.getAttribute('max').value);
 		maxDuration = maxDuration === NaN ? 24 : maxDuration;
 
-		// SOURCE: http://stackoverflow.com/questions/46155/validate-email-address-in-javascript
-		function validateEmail(email) {
 
-			var re = /^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
+		// TODO: refactor into general input utility class, or base form class
+		EventFormViewModel.prototype.passInput = function (el) {
+			el.setCustomValidity('');
+			this.updateValidationErrorState(el);
+			return true;
+		};
 
-			return re.test(email);
-		}
+		// TODO: refactor into general input utility class, or base form class
+		EventFormViewModel.prototype.failInput = function (el, msg) {
+			el.setCustomValidity(msg);
+			this.updateValidationErrorState(el);
+			return false;
+		};
+
 
 		// Permit empty, or a valid email
-		function updateEmailValidity() {
+		EventFormViewModel.prototype.updateEmailValidity = function() {
 
 			var email = emailEl.value;
 
 			if (email && email.length > 0) {
-
-				if (!validateEmail(email))
+				if (!validateEmail(email)) {
 					emailEl.setCustomValidity('Enter a guest\'s email address.');
-				else
-					emailEl.setCustomValidity('');
-
-			} else {
-
-				emailEl.setCustomValidity('');
-			}
-
-			that.updateValidationErrorState(emailEl);
-		}
-
-		// Ensure we have at least one guest listed.
-		// If we don't, we'll invalidate the input field the user will employ to enter one.
-		function updateGuestsValidity() {
-
-			if (!that.guestEmails || that.guestEmails.length < 1) {
-
-				emailEl.setCustomValidity('Enter a guest\'s email address.');
-
-				that.updateValidationErrorState(emailEl);
-
-				return false;
-			}
-
-			return true;
-		}
-
-		// Ensure the event is not in the past
-		function updateStartValidity() {
-
-			// Empty value is handled by required attribute
-			if (!startEl.value)
-				return true;
-
-			var now = moment(); // TODO: inject current time dependency for testability
-			var start = moment(startEl.value);
-
-			if (start.isValid()) {
-
-				// Ensure the start date occurs in the future
-				if (now.isAfter(start)) {
-
-					startEl.setCustomValidity('The event cannot begin in the past.');
-
-					that.updateValidationErrorState(startEl);
-
+					that.updateValidationErrorState(emailEl);
 					return false;
 				}
 			}
 
-			return true;
-		}
+			return that.passInput(emailEl);
+		};
+
+		// Ensure we have at least one guest listed.
+		// If we don't, we'll invalidate the input field the user will employ to enter one.
+		EventFormViewModel.prototype.updateGuestsValidity = function() {
+
+			if (!that.guestEmails || that.guestEmails.length < 1) {
+
+				emailEl.setCustomValidity('Enter a guest\'s email address.');
+				that.updateValidationErrorState(emailEl);
+				return false;
+			}
+
+			return that.passInput(emailEl);
+		};
+
+		// Ensure the event is not in the past or invalid
+		EventFormViewModel.prototype.updateStartDateValidity = function() {
+
+			if (startDateEl.value) {
+
+				var start = parseDateFrom(startDateEl);
+				if (start.isValid()) {
+
+					var now = moment(); // TODO: inject current time dependency for testability
+
+					var startDateTime = parseTimeOfDayFrom(start, startTimeEl);
+
+					if (startDateTime.isValid()) {
+
+						// Ensure the start date and time occurs in the future
+						if (now.isAfter(startDateTime)) {
+
+							startDateEl.setCustomValidity('The event cannot begin in the past.');
+							that.updateValidationErrorState(startDateEl);
+							return false;
+						}
+					} else {
+
+						// Ensure the start date occurs in the future
+						if (now.isAfter(start)) {
+
+							startDateEl.setCustomValidity('The event cannot begin in the past.');
+							that.updateValidationErrorState(startDateEl);
+							return false;
+						}
+					}
+				} else {
+					startDateEl.setCustomValidity('Please enter a start date like 2016-08-21');
+					that.updateValidationErrorState(startDateEl);
+					return false;
+				}
+			}
+
+			return that.passInput(startDateEl);
+		};
+
+		EventFormViewModel.prototype.updateStartTimeValidity = function() {
+
+			if (startTimeEl.value) {
+
+				var now = moment(); // TODO: inject current time dependency for testability
+
+				// Get the input start date, otherwise today
+				var startDay = parseDateFrom(startDateEl);
+
+				var haveStartDate = startDay.isValid();
+
+				if (!haveStartDate)
+					startDay = now.clone().startOf('day');
+
+				var start = parseTimeOfDayFrom(startDay, startTimeEl);
+
+				if (start.isValid()) {
+
+					if (haveStartDate) {
+
+						// Re-validate the start date with the given TOD
+						that.updateStartDateValidity();
+
+						// Ensure the start datetime occurs in the future
+						if (now.isAfter(start)) {
+
+							startTimeEl.setCustomValidity('The event cannot begin in the past.');
+							that.updateValidationErrorState(startTimeEl);
+							return false;
+						}
+					}
+				} else {
+					startTimeEl.setCustomValidity('Please enter a time like 7:30 PM or 19:30');
+					that.updateValidationErrorState(startTimeEl);
+					return false;
+				}
+			}
+
+			return that.passInput(startTimeEl);
+		};
 
 		// Ensure the event lasts between 1 and 24 hours.
 		// Not all browsers (mobile) will respect the min and max attributes on 'number' inputs.
 		// Note that we intend to limit the choices to integral hours
 		// in the picker (step = 1) for a simpler UX, but non-integral values are not prohibited.
-		function updateDurationValidity() {
+		EventFormViewModel.prototype.updateDurationValidity = function() {
 
-			// Empty value is handled by required attribute
-			if (!durationEl.value)
-				return true;
+			if (durationEl.value) {
 
-			var hours = parseFloat(durationEl.value);
+				var hours = parseFloat(durationEl.value);
 
-			// Ensure the user entered a number
-			if (hours === NaN) {
+				// Ensure the user entered a number
+				if (hours === NaN) {
 
-				durationEl.setCustomValidity('Please enter a number of hours.');
+					durationEl.setCustomValidity('Please enter a number of hours.');
+					that.updateValidationErrorState(durationEl);
+					return false;
+				}
 
-				that.updateValidationErrorState(durationEl);
+				// Ensure the user entered a number within the allowed range
+				if (hours < minDuration || hours > maxDuration) {
 
-				return false;
+					durationEl.setCustomValidity('Please enter a number of hours not less than 1 nor more than 24.');
+					that.updateValidationErrorState(durationEl);
+					return false;
+				}
 			}
 
-			// Ensure the user entered a number within the allowed range
-			if (hours < minDuration || hours > maxDuration) {
-
-				durationEl.setCustomValidity('Please enter a number of hours not less than 1 nor more than 24.');
-
-				that.updateValidationErrorState(durationEl);
-
-				return false;
-			}
-
-			return true;
-		}
+			return that.passInput(durationEl);
+		};
 
 		// Custom validate the email field on blur
 		emailEl.addEventListener(
-			'blur',
-			updateEmailValidity);
+			'blur', that.updateEmailValidity);
 
-		// Custom validate the start field on blur
-		startEl.addEventListener(
-			'blur',
-			updateStartValidity);
+		// Custom validate the start fields on blur/update
+		startDateEl.addEventListener(
+			'blur', that.updateStartDateValidity);
+
+		startTimeEl.addEventListener(
+			'blur', that.updateStartTimeValidity);
 
 		// Custom validate the duration field on blur
 		durationEl.addEventListener(
-			'blur',
-			updateDurationValidity);
-
-		// Add an icon to the add email button in our standard way
-		var addGuestButton = document.getElementById('new-event-guest-add-btn');
-		appendGlyph(addGuestButton, 'fa-plus', 'add guest');
+			'blur', that.updateDurationValidity);
 
 		function handleGuestAdd() {
 
 			// Force validation
 			emailEl.focus();
 			emailEl.blur();
-			updateEmailValidity();
+			that.updateEmailValidity();
 
 			if (emailEl.validity.valid && emailEl.value && emailEl.value.length > 0) {
 
@@ -532,12 +609,10 @@
 		// Wire up keyboard navigation for the guest list
 		// TODO: refactor guest list into widget
 		that._guestList.addEventListener(
-			'keydown',
-			handleKeyboardNav);
+			'keydown', handleKeyboardNav);
 
 		that._guestList.addEventListener(
-			'keypress',
-			function (event) {
+			'keypress', function (event) {
 
 					if (event.altKey || event.ctrlKey || event.shiftKey) {
 						return true;
@@ -559,8 +634,7 @@
 				});
 
 		that._guestList.addEventListener(
-			'focus',
-			function (event) {
+			'focus', function (event) {
 
 				// If there are any list items, make the first focusable, then make the container not focusable
 				var firstItem = that._guestList.querySelector('.guest-item');
@@ -572,13 +646,16 @@
 				return true;
 			});
 
+		// Add an icon to the add email button in our standard way
+		var addGuestButton = document.getElementById('new-event-guest-add-btn');
+		appendGlyph(addGuestButton, 'fa-plus', 'add guest');
+
 		this.preFormSubmit = function () {
 
 			var isValid = true;
 
-			// Run standard HTML5 validation on standard fields,
-			// then perform custom validation state update
-			this.allInputs().forEach(function (input) {
+			// Run standard HTML5 validation on standard fields
+			that.allInputs().forEach(function (input) {
 
 				input.checkValidity();
 
@@ -588,13 +665,14 @@
 			});
 
 			// Check the start
-			updateStartValidity();
+			that.updateStartDateValidity();
+			that.updateStartTimeValidity();
 
 			// Check the duration
-			updateDurationValidity();
+			that.updateDurationValidity();
 
 			// Ensure we have at least one guest's email
-			isValid &= updateGuestsValidity();
+			isValid &= that.updateGuestsValidity();
 
 			return isValid;
 		};

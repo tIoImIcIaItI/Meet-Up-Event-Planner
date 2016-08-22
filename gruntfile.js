@@ -149,19 +149,7 @@ module.exports = function (grunt) {
 
 		// Copy over files not otherwise relocated by other plug-ins
 		copy: {
-			images: {
-				files: [{
-					expand: true,
-					cwd: 'src/img',
-					src: '*.{png,jpg,jpeg,gif}',
-					dest: 'dist/img'
-				}, {
-					expand: true,
-					cwd: 'images/icons',
-					src: '*.{png,jpg,jpeg,gif}',
-					dest: 'dist/img/icons'
-				}]
-			}
+
 		},
 
 		// Remove generated and copied files
