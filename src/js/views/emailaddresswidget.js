@@ -15,6 +15,7 @@
 		this.email = email;
 
 		this.onClick = null;
+		this.onSelect = null;
 		this.onAboutToRemove = null; // return false to cancel the removal
 	};
 
@@ -68,6 +69,22 @@
 
 				if (that.onClick)
 					return that.onClick(event, that);
+				return true;
+			});
+
+		// Ensure that if any of this widget's toolbar buttons become focused,
+		// this widget is properly selected. This may happen if the user mouses down
+		// on a button, drags off, then mouses up leaving the button focused- but avoiding
+		// our click handler.
+		arrayFrom(wrapper.querySelectorAll('.guest-email-address-toolbar-btn'))
+			.forEach(function (el) {
+				el.addEventListener(
+					'focus',
+					function () {
+						if (that.onSelect)
+							return that.onSelect(that, wrapper);
+						return true;
+					});
 			});
 
 		return frag;
@@ -79,7 +96,7 @@
 
 		if (el && el.parentNode)
 			el.parentNode.remove();
-	}
+	};
 
 	global.EmailAddressWidget = EmailAddressWidget;
 

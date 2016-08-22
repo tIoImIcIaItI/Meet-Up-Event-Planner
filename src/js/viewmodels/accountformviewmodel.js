@@ -53,7 +53,7 @@
 
 		// Reset the password helper widget
 		this._pwdHelper.reset();
-	}
+	};
 
 	global.AccountFormViewModel = AccountFormViewModel;
 

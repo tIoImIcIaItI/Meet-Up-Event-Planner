@@ -117,6 +117,19 @@
 			this.clearValidationErrorState(input);
 	};
 
+	FormViewModel.prototype.passInput = function (el) {
+		el.setCustomValidity('');
+		this.updateValidationErrorState(el);
+		return true;
+	};
+
+	FormViewModel.prototype.failInput = function (el, msg) {
+		el.setCustomValidity(msg);
+		this.updateValidationErrorState(el);
+		return false;
+	};
+
+
 	FormViewModel.prototype.initializeValidation = function () {
 		var that = this;
 

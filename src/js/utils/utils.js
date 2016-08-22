@@ -3,72 +3,6 @@
 (function (global) {
 	'use strict';
 
-	// SOURCE: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/includes
-	if (!Array.prototype.includes) {
-		// ReSharper disable once NativeTypePrototypeExtending
-		Array.prototype.includes = function (searchElement /*, fromIndex*/) {
-			'use strict';
-			if (this == null) {
-				throw new TypeError('Array.prototype.includes called on null or undefined');
-			}
-
-			// ReSharper disable once InconsistentNaming
-			var O = Object(this);
-			var len = parseInt(O.length, 10) || 0;
-			if (len === 0) {
-				return false;
-			}
-			var n = parseInt(arguments[1], 10) || 0;
-			var k;
-			if (n >= 0) {
-				k = n;
-			} else {
-				k = len + n;
-				if (k < 0) { k = 0; }
-			}
-			var currentElement;
-			while (k < len) {
-				currentElement = O[k];
-				if (searchElement === currentElement ||
-					// ReSharper disable SimilarExpressionsComparison
-				   (searchElement !== searchElement && currentElement !== currentElement)) { // NaN !== NaN
-					// ReSharper restore SimilarExpressionsComparison
-					return true;
-				}
-				k++;
-			}
-			return false;
-		};
-	}
-
-	// Trivial wrapper for the array slice hack in pre-ES6 environments
-	global.arrayFrom = function (arrayLike) {
-
-		return Array.prototype.slice.call(arrayLike);
-	};
-
-	if (!Array.prototype.last) {
-		// ReSharper disable once NativeTypePrototypeExtending
-		Array.prototype.last = function () {
-			return this[this.length - 1];
-		};
-	};
-
-
-	// Consolidate steps used to wire up a sub-class's prototype.
-	// From what I've gleaned from other's countless online discussions, books, courses, etc.
-	// of this matter, this is the most complete set of steps needed to yield sensible answers
-	// to all queries about the object's 'identity' and of course provide access
-	// to the base class functionality.
-	global.subclass = function (sub, base) {
-
-		sub.prototype = Object.create(base.prototype); // inherit a copy of the base class's prototype chain
-		sub.prototype.base = base.prototype; // report being derived from the given base class
-		sub.prototype.constructor = sub; // report being constructed from this most-specific subclass
-	};
-
-
-
 	// DOM helper to remove an element from the tree
 	// ADAPTED FROM: http://stackoverflow.com/questions/3387427/remove-element-by-id
 	Element.prototype.remove = function () {
@@ -155,7 +89,73 @@
 	global.removeAllChildren = function (el) {
 
 		el.innerHTML = '';
-	}
+	};
+
+	// ReSharper disable once InconsistentNaming
+	global.SeekOrigin = {
+		begin: 0,
+		current: 1,
+		end: 2
+	};
+
+	// TODO: filter, begin, end support
+	global.seekSiblingOf = function(el, origin, offset/*, filter*/) {
+
+		if (!el) throw new Error('Must supply an element');
+		if (!el.parentNode) throw new Error('Must supply an element that is a child of some other element');
+
+		origin = origin || SeekOrigin.begin;
+
+		var res = null;
+
+		// TODO: filter
+
+		switch (origin) {
+			case SeekOrigin.begin:
+				// TODO
+				break;
+
+			case SeekOrigin.current:
+				if (offset > 0) {
+
+					do {
+						res = el.nextSibling;
+					} while (res && offset-- > 1);
+
+				} else {
+
+					offset *= -1;
+					do {
+						res = el.previousSibling;
+					} while (res && offset-- > 1);
+
+				}
+				break;
+
+			case SeekOrigin.end:
+				// TODO
+				break;
+
+			default:
+				break;
+		}
+
+		return res;
+	};
+
+	// Returns the previous sibling of a wrapped element
+	global.previousWrappedSiblingOf = function(el, filter) {
+		var res = seekSiblingOf(el, SeekOrigin.current, -1, filter);
+		return res ? res.firstElementChild : null;
+	};
+
+	// Returns the next sibling of a wrapped element
+	global.nextWrappedSiblingOf = function(el, filter) {
+		var res = seekSiblingOf(el, SeekOrigin.current, 1, filter);
+		return res ? res.firstElementChild : null;
+	};
+
+
 
 	// Returns a random-ish integer between min (included) and max (included)
 	// Using Math.round() will give you a non-uniform distribution!
@@ -182,6 +182,8 @@
 		return choices[getRandomIntInclusive(0, choices.length - 1)];
 	};
 
+
+
 	// SOURCE: http://www.oaa-accessibility.org/example/19/
 	global.keyCodes = {
 		tab: 9,
@@ -200,14 +202,15 @@
 		down: 40
 	};
 
+
+
 	// SOURCE: http://stackoverflow.com/questions/46155/validate-email-address-in-javascript
 	global.validateEmail = function(email) {
 
 		var re = /^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
 
 		return re.test(email);
-	}
-
+	};
 
 
 	// APPLICATION-SPECIFIC GLOBALS

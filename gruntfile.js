@@ -114,6 +114,8 @@ module.exports = function (grunt) {
 			dist: {
 				//src: ['src/js/**/*.js'],
 				src: [
+					'src/js/utils/arrays.js',
+					'src/js/utils/objects.js',
 					'src/js/utils/utils.js',
 					'src/js/utils/deferred.js',
 					'src/js/utils/observable.js',
@@ -186,8 +188,8 @@ module.exports = function (grunt) {
 	grunt.registerTask('default', [
 		'clean',
 		//'responsive_images', 'imagemin',
-		'htmlmin', 'cssmin', 'concat', 'uglify',
-		'copy'
+		'htmlmin', 'cssmin', 'concat', 'uglify'//,
+		//'copy'
 	]);
 
 };

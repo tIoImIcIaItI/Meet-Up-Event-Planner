@@ -109,10 +109,10 @@ label {
 	color: #3a536d;
 }
 
-	label.required:after {
-		content: ' *';
-		color: #668;
-	}
+.required:after {
+	content: ' *';
+	color: #668;
+}
 
 ul {
 	margin: 0;
@@ -276,11 +276,11 @@ time,
 	width: auto;
 }
 
-#new-event-guest {
+.new-event-guest {
 	width: 80%;
 }
 
-#new-event-duration {
+.new-event-duration {
 	width: 80%;
 }
 
@@ -304,8 +304,6 @@ time,
 		/* ReSharper disable once CssBrowserCompatibility */
 		/* ReSharper disable RequiresFallbackColor */
 		box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23); /* fallback to nothing */
-		/* ReSharper restore RequiresFallbackColor */
-		outline: none; /* replaced with styling above */
 	}
 
 	.guest-item[aria-selected=true]:focus {

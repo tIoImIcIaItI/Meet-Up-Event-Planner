@@ -229,7 +229,7 @@
 
 		// Remove event view models
 		app.events = [];
-	}
+	};
 
 	// Start loading the user's events
 	app.loadEvents = function () {

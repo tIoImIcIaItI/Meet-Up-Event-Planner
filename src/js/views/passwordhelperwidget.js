@@ -32,13 +32,13 @@
 	PasswordHelperWidget.prototype._clearValidationStateOn = function (el) {
 		el.classList.remove(pwdCheckFailedClass);
 		el.classList.remove(pwdCheckPassedClass);
-	}
+	};
 
 	// Sets the validation state on a given password hint, based on the given validation flag
 	PasswordHelperWidget.prototype._setValidationStateOn = function (el, valid) {
 		el.addOrRemoveClass(pwdCheckFailedClass, !valid);
 		el.addOrRemoveClass(pwdCheckPassedClass, valid);
-	}
+	};
 
 	// Randomize the password constraint hints so as not to skew the distribution via power of suggestion
 	PasswordHelperWidget.prototype._randomizeHints = function () {
@@ -74,7 +74,7 @@
 		this._allCheckEls.forEach(function (el) {
 			that._clearValidationStateOn(el);
 		});
-	}
+	};
 
 	// Evaluate the current password value and update the validation states of all hints,
 	// and the overall validation state.
@@ -112,7 +112,7 @@
 		}
 
 		this.isValid(isValid);
-	}
+	};
 
 	PasswordHelperWidget.prototype.init = function () {
 		var that = this;
@@ -140,7 +140,7 @@
 
 		// Clear the validation state of all hints
 		this._clearValidationState();
-	}
+	};
 
 	global.PasswordHelperWidget = PasswordHelperWidget;
 

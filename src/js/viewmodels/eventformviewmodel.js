@@ -22,69 +22,6 @@
 
 	subclass(EventFormViewModel, FormViewModel);
 
-	// TODO: move element seek into own file or utils
-	// ReSharper disable once InconsistentNaming
-	var SeekOrigin = {
-		begin: 0,
-		current: 1,
-		end: 2
-	};
-
-	function seekSiblingOf(el, origin, offset/*, filter*/) {
-
-		if (!el) throw new Error('Must supply an element');
-		if (!el.parentNode) throw new Error('Must supply an element that is a child of some other element');
-
-		origin = origin || SeekOrigin.begin;
-
-		var res = null;
-
-		// TODO: filter
-
-		switch (origin) {
-			case SeekOrigin.begin:
-				// TODO
-				break;
-
-			case SeekOrigin.current:
-				if (offset > 0) {
-
-					do {
-						res = el.nextSibling;
-					} while (res && offset-- > 1)
-
-				} else {
-
-					offset *= -1;
-					do {
-						res = el.previousSibling;
-					} while (res && offset-- > 1)
-
-				}
-				break;
-
-			case SeekOrigin.end:
-				// TODO
-				break;
-
-			default:
-				break;
-		}
-
-		return res;
-	}
-
-	// Returns the previous sibling of a wrapped element
-	function previousWrappedSiblingOf(el, filter) {
-		var res = seekSiblingOf(el, SeekOrigin.current, -1, filter);
-		return res ? res.firstElementChild : null;
-	}
-
-	// Returns the next sibling of a wrapped element
-	function nextWrappedSiblingOf(el, filter) {
-		var res = seekSiblingOf(el, SeekOrigin.current, 1, filter);
-		return res ? res.firstElementChild : null;
-	}
 
 	// Returns an array filled with the current guest widget elements
 	function allGuestWidgetEls() {
@@ -100,16 +37,21 @@
 		if (el) {
 			allGuestWidgetEls()
 				.forEach(function (sibling) {
-					//sibling.blur();
 					sibling.setAttribute('tabindex', '-1');
-					//sibling.classList.remove('focus');
 					sibling.setAttribute('aria-selected', 'false');
 				});
 
-			//el.focus();
 			el.setAttribute('tabindex', '0');
-			//el.classList.add('focus');
 			el.setAttribute('aria-selected', 'true');
+		}
+	}
+
+	function onSelectListItem(vm, el) {
+
+		var isSelected = el.getAttribute('aria-selected') === 'true';
+
+		if (!isSelected) {
+			selectListItem(el);
 		}
 	}
 
@@ -121,13 +63,11 @@
 				.forEach(function (sibling) {
 					sibling.blur();
 					sibling.setAttribute('tabindex', '-1');
-					//sibling.classList.remove('focus');
 					sibling.setAttribute('aria-selected', 'false');
 				});
 
 			el.focus();
 			el.setAttribute('tabindex', '0');
-			//el.classList.add('focus');
 			el.setAttribute('aria-selected', 'true');
 
 			if (event)
@@ -205,7 +145,7 @@
 			}
 
 			return true; // proceed with the DOM removal
-		};
+		}
 
 		function onClick(event, widget) {
 
@@ -214,13 +154,14 @@
 
 			return maybeFocusListItem(
 				event, document.getElementById(widget.id));
-		};
+		}
 
 		newWidget.onAboutToRemove = onAboutToRemove;
 		newWidget.onClick = onClick;
+		newWidget.onSelect = onSelectListItem;
 
 		return newWidget;
-	}
+	};
 
 	// Create a widget for the guest email and add our events
 	EventFormViewModel.prototype._createWidgetForEmail = function (email) {
@@ -236,24 +177,6 @@
 
 		document.getElementById('new-event-guest-list').
 			appendChild(widget.render());
-
-		var widgetEl = document.getElementById(widget.id);
-
-		// Ensure that if any of this widget's toolbar buttons become focused,
-		// this widget is properly selected. This may happen if the user mouses down
-		// on a button, drags off, then mouses up leaving the button focused- but avoiding
-		// our click handler.
-		arrayFrom(widgetEl.querySelectorAll('.guest-email-address-toolbar-btn'))
-			.forEach(function(el) {
-				el.addEventListener(
-					'focus',
-					function() {
-						var isSelected = widgetEl.getAttribute('aria-selected') === 'true';
-						if (!isSelected) {
-							selectListItem(widgetEl);
-						}
-					});
-			});
 	};
 
 	// Returns an event view model from the form's validated input values
@@ -291,8 +214,8 @@
 		document.getElementById('new-event-name').value = event.title;
 		document.getElementById('new-event-type').value = event.type;
 		document.getElementById('new-event-host').value = event.host;
-		document.getElementById('new-event-start-date').value = ''; // TODO
-		document.getElementById('new-event-start-time').value = ''; // TODO
+		document.getElementById('new-event-start-date').value = start.format('YYYY-MM-DD');
+		document.getElementById('new-event-start-time').value = start.format('h:mm a');
 		document.getElementById('new-event-duration').value = duration;
 		document.getElementById('new-event-location').value = event.location;
 		document.getElementById('new-event-message').value = event.message;
@@ -331,37 +254,19 @@
 		that._guestList = document.getElementById('new-event-guest-list');
 
 		var minDuration = parseFloat(durationEl.getAttribute('min').value);
-		minDuration = minDuration === NaN ? 1 : minDuration;
+		minDuration = isNaN(minDuration) ? 1 : minDuration;
 
 		var maxDuration = parseFloat(durationEl.getAttribute('max').value);
-		maxDuration = maxDuration === NaN ? 24 : maxDuration;
-
-
-		// TODO: refactor into general input utility class, or base form class
-		EventFormViewModel.prototype.passInput = function (el) {
-			el.setCustomValidity('');
-			this.updateValidationErrorState(el);
-			return true;
-		};
-
-		// TODO: refactor into general input utility class, or base form class
-		EventFormViewModel.prototype.failInput = function (el, msg) {
-			el.setCustomValidity(msg);
-			this.updateValidationErrorState(el);
-			return false;
-		};
-
+		maxDuration = isNaN(maxDuration) ? 24 : maxDuration;
 
 		// Permit empty, or a valid email
-		EventFormViewModel.prototype.updateEmailValidity = function() {
+		EventFormViewModel.prototype.updateEmailValidity = function () {
 
 			var email = emailEl.value;
 
 			if (email && email.length > 0) {
 				if (!validateEmail(email)) {
-					emailEl.setCustomValidity('Enter a guest\'s email address.');
-					that.updateValidationErrorState(emailEl);
-					return false;
+					return that.failInput(emailEl, 'Enter a guest\'s email address.');
 				}
 			}
 
@@ -370,20 +275,18 @@
 
 		// Ensure we have at least one guest listed.
 		// If we don't, we'll invalidate the input field the user will employ to enter one.
-		EventFormViewModel.prototype.updateGuestsValidity = function() {
+		EventFormViewModel.prototype.updateGuestsValidity = function () {
 
 			if (!that.guestEmails || that.guestEmails.length < 1) {
 
-				emailEl.setCustomValidity('Enter a guest\'s email address.');
-				that.updateValidationErrorState(emailEl);
-				return false;
+				return that.failInput(emailEl, 'Enter a guest\'s email address.');
 			}
 
 			return that.passInput(emailEl);
 		};
 
 		// Ensure the event is not in the past or invalid
-		EventFormViewModel.prototype.updateStartDateValidity = function() {
+		EventFormViewModel.prototype.updateStartDateValidity = function () {
 
 			if (startDateEl.value) {
 
@@ -399,31 +302,25 @@
 						// Ensure the start date and time occurs in the future
 						if (now.isAfter(startDateTime)) {
 
-							startDateEl.setCustomValidity('The event cannot begin in the past.');
-							that.updateValidationErrorState(startDateEl);
-							return false;
+							return that.failInput(startDateEl, 'The event cannot begin in the past.');
 						}
 					} else {
 
 						// Ensure the start date occurs in the future
 						if (now.isAfter(start)) {
 
-							startDateEl.setCustomValidity('The event cannot begin in the past.');
-							that.updateValidationErrorState(startDateEl);
-							return false;
+							return that.failInput(startDateEl, 'The event cannot begin in the past.');
 						}
 					}
 				} else {
-					startDateEl.setCustomValidity('Please enter a start date like 2016-08-21');
-					that.updateValidationErrorState(startDateEl);
-					return false;
+					return that.failInput(startDateEl, 'Please enter a start date like 2016-08-21');
 				}
 			}
 
 			return that.passInput(startDateEl);
 		};
 
-		EventFormViewModel.prototype.updateStartTimeValidity = function() {
+		EventFormViewModel.prototype.updateStartTimeValidity = function () {
 
 			if (startTimeEl.value) {
 
@@ -449,15 +346,11 @@
 						// Ensure the start datetime occurs in the future
 						if (now.isAfter(start)) {
 
-							startTimeEl.setCustomValidity('The event cannot begin in the past.');
-							that.updateValidationErrorState(startTimeEl);
-							return false;
+							return that.failInput(startTimeEl, 'The event cannot begin in the past.');
 						}
 					}
 				} else {
-					startTimeEl.setCustomValidity('Please enter a time like 7:30 PM or 19:30');
-					that.updateValidationErrorState(startTimeEl);
-					return false;
+					return that.failInput(startTimeEl, 'Please enter a time like 7:30 PM or 19:30');
 				}
 			}
 
@@ -468,26 +361,22 @@
 		// Not all browsers (mobile) will respect the min and max attributes on 'number' inputs.
 		// Note that we intend to limit the choices to integral hours
 		// in the picker (step = 1) for a simpler UX, but non-integral values are not prohibited.
-		EventFormViewModel.prototype.updateDurationValidity = function() {
+		EventFormViewModel.prototype.updateDurationValidity = function () {
 
 			if (durationEl.value) {
 
 				var hours = parseFloat(durationEl.value);
 
 				// Ensure the user entered a number
-				if (hours === NaN) {
+				if (isNaN(hours)) {
 
-					durationEl.setCustomValidity('Please enter a number of hours.');
-					that.updateValidationErrorState(durationEl);
-					return false;
+					return that.failInput(durationEl, 'Please enter a number of hours.');
 				}
 
 				// Ensure the user entered a number within the allowed range
 				if (hours < minDuration || hours > maxDuration) {
 
-					durationEl.setCustomValidity('Please enter a number of hours not less than 1 nor more than 24.');
-					that.updateValidationErrorState(durationEl);
-					return false;
+					return that.failInput(durationEl, 'Please enter a number of hours not less than 1 nor more than 24.');
 				}
 			}
 
@@ -537,7 +426,7 @@
 				emailEl.focus();
 
 				// Update form validation
-				updateGuestsValidity();
+				that.updateGuestsValidity();
 
 			} else {
 
@@ -601,7 +490,7 @@
 					}
 					break;
 
-			};
+			}
 
 			return res;
 		}
@@ -614,24 +503,24 @@
 		that._guestList.addEventListener(
 			'keypress', function (event) {
 
-					if (event.altKey || event.ctrlKey || event.shiftKey) {
-						return true;
-					}
-
-					switch (event.keyCode) {
-						//case keyCodes.space:
-						case keyCodes.left:
-						case keyCodes.right:
-						case keyCodes.up:
-						case keyCodes.down:
-							{
-								event.stopPropagation();
-								return false;
-							}
-					}
-
+				if (event.altKey || event.ctrlKey || event.shiftKey) {
 					return true;
-				});
+				}
+
+				switch (event.keyCode) {
+					//case keyCodes.space:
+					case keyCodes.left:
+					case keyCodes.right:
+					case keyCodes.up:
+					case keyCodes.down:
+						{
+							event.stopPropagation();
+							return false;
+						}
+				}
+
+				return true;
+			});
 
 		that._guestList.addEventListener(
 			'focus', function (event) {
