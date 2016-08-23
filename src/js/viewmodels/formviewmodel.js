@@ -81,6 +81,7 @@
 
 		this.errorElementsFor(input).forEach(function (error) {
 			error.removeAttribute('aria-hidden');
+			//error.setAttribute('aria-live', 'assertive');
 			error.textContent = input.validationMessage;
 			error.classList.remove('invisible');
 		});
@@ -94,6 +95,7 @@
 	FormViewModel.prototype.clearValidationErrorState = function (input) {
 
 		this.errorElementsFor(input).forEach(function (error) {
+			//error.removeAttribute('aria-live');
 			error.setAttribute('aria-hidden', 'true');
 			error.classList.add('invisible');
 			error.textContent = '&nbsp;'; // prevent collapse
@@ -154,14 +156,22 @@
 
 				if (label) {
 
+					// Allow styling required labels
 					label.classList.add('required');
 
-					// Add a visual annotation to required fields.
-					// This is to be hidden from assistive technologies, as it is redundant with the required attribute.
-					var splat = newLabelGlyph('fa-asterisk', null, 'required-annotation');
+					// Ensure screen readers will annouce that this field is required
+					var ariaLabel = newTextElement('span', label.textContent + ' required');
+					ariaLabel.id = input.id + '-aria-label';
+					ariaLabel.classList.add('sr-only');
+
+					label.appendChild(ariaLabel);
+					input.setAttribute('aria-labelledby', ariaLabel.id);
+
+					// Add a visual annotation to required field labels
+					var splat = newLabelGlyph('fa-asterisk', 'required', 'required-annotation');
 					splat.setAttribute('aria-hidden', 'true');
 
-					label.insertAfter(splat);
+					label.appendChild(splat);
 				}
 			}
 
@@ -171,6 +181,12 @@
 			input.addEventListener('valid', addDirtyClass);
 
 			input.addEventListener('blur', validate);
+
+			that.errorElementsFor(input).forEach(function (error) {
+				//error.removeAttribute('aria-hidden');
+				error.setAttribute('aria-live', 'assertive');
+			});
+
 		});
 
 	};
