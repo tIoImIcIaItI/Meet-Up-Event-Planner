@@ -97,8 +97,8 @@
 		this.errorElementsFor(input).forEach(function (error) {
 			//error.removeAttribute('aria-live');
 			error.setAttribute('aria-hidden', 'true');
+			error.textContent = '';
 			error.classList.add('invisible');
-			error.textContent = '&nbsp;'; // prevent collapse
 		});
 
 		input.removeAttribute('aria-invalid');
@@ -143,51 +143,63 @@
 			that.updateValidationErrorState(evt.target);
 		}
 
-		this.allInputs().forEach(function (input) {
+		// Returns a space-delimited list of ids from the given elements
+		function idListFrom(els) {
+			return els.
+				map(function (el) { return el.id; }).
+				join(' ');
+		}
 
-			// Skip elements opting-out with a 'data-novalidate' attribute
-			if (input.hasAttribute('data-novalidate'))
-				return;
+		// Prepare all inputs, except those opting-out with a 'data-novalidate' attribute
+		this.allInputs().
+			filter(function (input) { return !input.hasAttribute('data-novalidate'); }).
+			forEach(function (input) {
 
-			// Add the 'required' class to the label of any required input
-			if (input.hasAttribute('required')) {
+				var errorElements =
+					that.errorElementsFor(input);
 
-				var label = that.labelFor(input);
+				// Allow AT to associate and announce the error messages with the input field
+				errorElements.forEach(function(error) {
+					error.setAttribute('aria-live', 'assertive');
+				});
 
-				if (label) {
+				if (!input.getAttribute('aria-describedby'))
+					input.setAttribute('aria-describedby', idListFrom(errorElements));
 
-					// Allow styling required labels
-					label.classList.add('required');
+				// Add the 'required' class to the label of any required input
+				if (input.hasAttribute('required')) {
 
-					// Ensure screen readers will annouce that this field is required
-					var ariaLabel = newTextElement('span', label.textContent + ' required');
-					ariaLabel.id = input.id + '-aria-label';
-					ariaLabel.classList.add('sr-only');
+					var label = that.labelFor(input);
 
-					label.appendChild(ariaLabel);
-					input.setAttribute('aria-labelledby', ariaLabel.id);
+					if (label) {
 
-					// Add a visual annotation to required field labels
-					var splat = newLabelGlyph('fa-asterisk', 'required', 'required-annotation');
-					splat.setAttribute('aria-hidden', 'true');
+						// Allow styling required labels
+						label.classList.add('required');
 
-					label.appendChild(splat);
+						// Ensure screen readers will annouce that this field is required
+						var ariaLabel = newTextElement('span', label.textContent + ' required');
+						ariaLabel.id = input.id + '-aria-label';
+						ariaLabel.classList.add('sr-only');
+
+						label.appendChild(ariaLabel);
+						input.setAttribute('aria-labelledby', ariaLabel.id);
+
+						// Add a visual annotation to required field labels
+						var splat = newLabelGlyph('fa-asterisk', 'required', 'required-annotation');
+						splat.setAttribute('aria-hidden', 'true');
+
+						label.appendChild(splat);
+					}
 				}
-			}
 
-			/* ADAPTED FROM: https://developers.google.com/web/fundamentals/design-and-ui/input/forms/provide-real-time-validation?hl=en */
-			input.addEventListener('blur', addDirtyClass);
-			input.addEventListener('invalid', addDirtyClass);
-			input.addEventListener('valid', addDirtyClass);
+				/* ADAPTED FROM: https://developers.google.com/web/fundamentals/design-and-ui/input/forms/provide-real-time-validation?hl=en */
+				input.addEventListener('blur', addDirtyClass);
+				input.addEventListener('invalid', addDirtyClass);
+				input.addEventListener('valid', addDirtyClass);
 
-			input.addEventListener('blur', validate);
+				input.addEventListener('blur', validate);
 
-			that.errorElementsFor(input).forEach(function (error) {
-				//error.removeAttribute('aria-hidden');
-				error.setAttribute('aria-live', 'assertive');
 			});
-
-		});
 
 	};
 

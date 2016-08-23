@@ -338,6 +338,7 @@ time,
 }
 
 .validation-error {
+    min-height: 1.5em; /* prevent collapse causing sliding content */
 	margin: 0;
 	margin-top: 0.25em;
 	font-style: italic;
