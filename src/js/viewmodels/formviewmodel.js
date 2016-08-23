@@ -152,8 +152,17 @@
 
 				var label = that.labelFor(input);
 
-				if (label)
+				if (label) {
+
 					label.classList.add('required');
+
+					// Add a visual annotation to required fields.
+					// This is to be hidden from assistive technologies, as it is redundant with the required attribute.
+					var splat = newLabelGlyph('fa-asterisk', null, 'required-annotation');
+					splat.setAttribute('aria-hidden', 'true');
+
+					label.insertAfter(splat);
+				}
 			}
 
 			/* ADAPTED FROM: https://developers.google.com/web/fundamentals/design-and-ui/input/forms/provide-real-time-validation?hl=en */

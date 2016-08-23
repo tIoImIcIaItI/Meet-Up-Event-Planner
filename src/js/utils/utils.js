@@ -16,6 +16,11 @@
 		this.insertBefore(newChild, this.firstChild);
 	};
 
+	// ADAPTED FROM: http://stackoverflow.com/a/4793630/6452184
+	Element.prototype.insertAfter = function (newNode) {
+		this.parentNode.insertBefore(newNode, this.nextSibling);
+	}
+
 	// NORMALIZATION for browsers that don't support second argument to classList.toggle()
 	Element.prototype.addOrRemoveClass = function (className, add) {
 
@@ -53,12 +58,14 @@
 	};
 
 	// Creates a fully-configured element from a Font Awesome glyph
-	global.newLabelGlyph = function (faName, title) {
+	global.newLabelGlyph = function (faName, title, customClass) {
+
+		customClass = customClass || 'event-label-glyph'; // TODO: remove this app-specific
 
 		var glyph = newTextElement('i', '');
 		glyph.classList.add('fa');
 		glyph.classList.add(faName);
-		glyph.classList.add('event-label-glyph'); // TODO: make this non-app-specific (argument?)
+		glyph.classList.add(customClass);
 
 		if (title)
 			glyph.title = title;
@@ -99,7 +106,7 @@
 	};
 
 	// TODO: filter, begin, end support
-	global.seekSiblingOf = function(el, origin, offset/*, filter*/) {
+	global.seekSiblingOf = function (el, origin, offset/*, filter*/) {
 
 		if (!el) throw new Error('Must supply an element');
 		if (!el.parentNode) throw new Error('Must supply an element that is a child of some other element');
@@ -144,13 +151,13 @@
 	};
 
 	// Returns the previous sibling of a wrapped element
-	global.previousWrappedSiblingOf = function(el, filter) {
+	global.previousWrappedSiblingOf = function (el, filter) {
 		var res = seekSiblingOf(el, SeekOrigin.current, -1, filter);
 		return res ? res.firstElementChild : null;
 	};
 
 	// Returns the next sibling of a wrapped element
-	global.nextWrappedSiblingOf = function(el, filter) {
+	global.nextWrappedSiblingOf = function (el, filter) {
 		var res = seekSiblingOf(el, SeekOrigin.current, 1, filter);
 		return res ? res.firstElementChild : null;
 	};
@@ -205,7 +212,7 @@
 
 
 	// SOURCE: http://stackoverflow.com/questions/46155/validate-email-address-in-javascript
-	global.validateEmail = function(email) {
+	global.validateEmail = function (email) {
 
 		var re = /^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
 

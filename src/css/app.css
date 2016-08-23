@@ -109,10 +109,12 @@ label {
 	color: #3a536d;
 }
 
-.required:after {
-	content: ' *';
+.required-annotation {
 	color: #668;
-}
+	font-size: 0.5em;
+	position: relative;
+	top: -1em;
+	left: .5em;}
 
 ul {
 	margin: 0;

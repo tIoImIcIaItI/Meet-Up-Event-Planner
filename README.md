@@ -93,7 +93,7 @@ Any errors encountered attempting to load or save events will display an alert b
 All users see the same data.
 There is no error handling for authentication failures due to invalid user credentials (or password reset, etc.).
 - There is no input for specifying a user avatar image source.
-- Deep-linking (routing) into the SPA's content or state is not supported.
+- Deep-linking (routing) into the SPA's content or state, is not supported.
 
 ## Attributions
 
@@ -109,6 +109,7 @@ The following sources were used in building the app and/or its execution.
 - Password Validation Regex: [The Art Of Web](http://www.the-art-of-web.com/javascript/validate-password/)
 - Element.remove: [Stack Overflow](http://stackoverflow.com/questions/3387427/remove-element-by-id)
 - Element.prependChild: [CallMeNick](http://callmenick.com/post/prepend-child-javascript)
+- insertAfter: [Stack Overflow](http://stackoverflow.com/a/4793630/6452184)
 - Standard Polyfills: [MDN](https://developer.mozilla.org)
 
 ### CSS
