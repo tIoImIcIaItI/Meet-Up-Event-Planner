@@ -164,9 +164,10 @@
 				app.user.avatar || 'http://placekitten.com/g/64/64';
 		} else {
 
-			// Ensure the authentication forms are clean and ready for input
+			// Ensure all forms are clean and ready for input after logging out
 			app.accountFormVm.reset();
 			app.loginFormVm.reset();
+			app.eventFormVm.reset();
 
 			app.clearAllEvents();
 		}

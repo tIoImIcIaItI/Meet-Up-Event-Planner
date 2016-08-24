@@ -126,6 +126,9 @@
 
 			if (that.guestEmails.length === 0) {
 
+				// Re-add the required attribute to the email input so it's clear this widget requires data entry
+				document.getElementById('new-event-guest').setAttribute('required', null);
+
 				// If there are no more list items, make the container not focusable
 				that._guestList.setAttribute('tabindex', '-1');
 
@@ -237,6 +240,9 @@
 		this.guestEmails.forEach(function (widget) {
 			widget.unrender();
 		});
+
+		// Re-add the required attribute to the email input
+		document.getElementById('new-event-guest').setAttribute('required', null);
 
 		// Reset the guest emails in this view model
 		this.guestEmails = [];
@@ -424,6 +430,9 @@
 
 				// Set focus back to the input so it's easier to add a bunch of guests at one time
 				emailEl.focus();
+
+				// Remove the required attribute from the email input
+				emailEl.removeAttribute('required');
 
 				// Update form validation
 				that.updateGuestsValidity();
