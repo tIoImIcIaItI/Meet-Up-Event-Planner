@@ -14,8 +14,6 @@ That said, 3rd-party components are used as follows.
 
 ## Building the App
 
-A pre-built version is already present in the [`dist/`](dist/) folder.
-
 A build process was implemented using Node (NPM) and Grunt.
 
 - Using `grunt-contrib-htmlmin`, all (local) HTML files were automatically minimized.
