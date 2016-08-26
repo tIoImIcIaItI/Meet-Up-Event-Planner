@@ -55,12 +55,12 @@ Each form input group will change color and display an error message if validati
 Aria attributes are used to mark invalid fields.
 
 Browsers that do not block invalid form submittal will instead display an alert.
-All browsers will show all validation errors if an invalid form submit is attempted.
+All browsers will show validation errors if an invalid form submit is attempted.
 
 ### Accessibility
 
 Aria attributes and HTML semantic elements have been used throughout, for both static and dynamic content.
-Application error conditions are announced via the aria `alert` role.
+Application and form error conditions are announced via the aria `alert` role.
 Selected list items receive the `aria-selected` attribute.
 Contrast has been verified sufficient.
 Visual states, icons, images, etc. are accessibly labeled.
@@ -73,7 +73,7 @@ The guest email list supports the following features.
 Tabbing again will exit the list.
 - Once entered, the `UP` and `DOWN` arrow keys will move the selection to the previous and next items respectively.
 - On an item has been selected, the `RIGHT` and `LEFT` arrow keys will move focus to and from the delete button respectively.
-- Once focused, the delete button may be clicked with the `SPACE` key.
+- Once focused, the delete button may be clicked with the `SPACE` key (standard behavior).
 - Clicking an item selects and focuses it.
 
 ### Error Handling
@@ -85,15 +85,15 @@ Any errors encountered attempting to load or save events will display an alert b
 ### What's Missing From This Incomplete App
 
 - Editing or deleting events, once created, is not supported.
-- User inputs are not cleansed for HTML, script, etc. before being added to the data store or rendered in the browser.
+- [SECURITY] User inputs are not cleansed for HTML, script, etc. before being added to the data store or rendered in the browser.
 - Persistence of user-entered data is limited to the page's lifetime (i.e. is held in browser memory only).
-- No internationalization or localization; password checks, dates and times are en-us centric.
+- [I18N] No internationalization or localization; password checks, dates and times are en-us centric.
 - There are no limits on the number of events displayed (ex. paging very many events).
 - The login form does not authenticate the user's credentials; credentials are not stored even within the page's lifetime. 
 All users see the same data.
 There is no error handling for authentication failures due to invalid user credentials (or password reset, etc.).
 - There is no input for specifying a user avatar image source.
-- Deep-linking (routing) into the SPA's content or state, is not supported.
+- [SEO] Deep-linking (routing) into the SPA's content or state, is not supported.
 
 ## Attributions
 
@@ -107,15 +107,17 @@ The following sources were used in building the app and/or its execution.
 
 - Input Dirty Class:  [Google](https://developers.google.com/web/fundamentals/design-and-ui/input/forms/provide-real-time-validation?hl=en)
 - Password Validation Regex: [The Art Of Web](http://www.the-art-of-web.com/javascript/validate-password/)
-- Element.remove: [Stack Overflow](http://stackoverflow.com/questions/3387427/remove-element-by-id)
-- Element.prependChild: [CallMeNick](http://callmenick.com/post/prepend-child-javascript)
-- insertAfter: [Stack Overflow](http://stackoverflow.com/a/4793630/6452184)
+- Element.remove(): [Stack Overflow](http://stackoverflow.com/questions/3387427/remove-element-by-id)
+- Element.prependChild(): [CallMeNick](http://callmenick.com/post/prepend-child-javascript)
+- insertAfter(): [Stack Overflow](http://stackoverflow.com/a/4793630/6452184)
+- Array.includes(): [MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/includes)
 - Standard Polyfills: [MDN](https://developer.mozilla.org)
+- Random Number Utilities: [MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/random)
 
 ### CSS
 
 - Material Design-like Box Shadows: [sdthornton](https://codepen.io/sdthornton/pen/wBZdXq)
-- Design Inspiration: [Invision](https://www.invisionapp.com/relate)
+- Design Inspiration: Invision [Relate](https://www.invisionapp.com/relate)
 
 ### Accessibility
 
