@@ -237,29 +237,24 @@
 
 					</fieldset>
 
+					<!--
+					NOTE: two datetime-local inputs are required by the rubric/reviewer.
+					-->
 					<fieldset title="When">
 						<legend>When</legend>
 
 						<!-- START -->
 						<div class="form-group">
-							<label class="control-label" for="new-event-start-date">On which date?</label>
-							<input id="new-event-start-date" type="text" name="new-event-start-date" required class="form-control" placeholder="2016-08-28">
+							<label class="control-label" for="new-event-start-date">When's it start?</label>
+							<input id="new-event-start-date" type="datetime-local" name="new-event-start-date" required step="60" class="form-control" placeholder="2016-08-28 7:30 PM">
 							<div id="new-event-start-date-error" data-error-for="new-event-start-date" class="validation-error text-danger invisible"></div>
 						</div>
-						<div class="form-group">
-							<label class="control-label" for="new-event-start-time">At what time?</label>
-							<input id="new-event-start-time" type="text" name="new-event-start-time" required step="900" class="form-control" placeholder="7:30 PM">
-							<div id="new-event-start-time-error" data-error-for="new-event-start-time" class="validation-error text-danger invisible"></div>
-						</div>
 
-						<!-- DURATION -->
+						<!-- END-->
 						<div class="form-group">
-							<label class="control-label" for="new-event-duration">How long does it last?</label>
-							<input id="new-event-duration" type="number" name="new-event-duration"
-								   required min="1" max="24"
-								   class="form-control form-control-inline new-event-duration" placeholder="3">
-							<span class=""> hours</span>
-							<div id="new-event-duration-error" data-error-for="new-event-duration" class="validation-error text-danger invisible"></div>
+							<label class="control-label" for="new-event-end-date">When's it end?</label>
+							<input id="new-event-end-date" type="datetime-local" name="new-event-end-date" required step="60" class="form-control" placeholder="2016-08-28 9:30 PM">
+							<div id="new-event-end-date-error" data-error-for="new-event-end-date" class="validation-error text-danger invisible"></div>
 						</div>
 
 					</fieldset>

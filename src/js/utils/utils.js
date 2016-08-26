@@ -19,7 +19,7 @@
 	// ADAPTED FROM: http://stackoverflow.com/a/4793630/6452184
 	Element.prototype.insertAfter = function (newNode) {
 		this.parentNode.insertBefore(newNode, this.nextSibling);
-	}
+	};
 
 	// NORMALIZATION for browsers that don't support second argument to classList.toggle()
 	Element.prototype.addOrRemoveClass = function (className, add) {
@@ -222,7 +222,7 @@
 
 	// APPLICATION-SPECIFIC GLOBALS
 	// TODO: put this someplace better
-	global.timestampFormat = 'YYYY-MM-DDTHH:mm:ss';
+	global.timestampFormat = 'YYYY-MM-DDTHH:mm';
 
 
 	// ReSharper disable once ThisInGlobalContext

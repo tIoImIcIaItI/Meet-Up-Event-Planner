@@ -92,25 +92,18 @@
 		return true;
 	}
 
-	function parseDateFrom(input) {
-		return moment(
-			input.value,
-			['YYYY-MM-DD', 'YYYY/MM/DD', 'YYYY MM DD',
-			'YYYY-M-D', 'YYYY/M/D', 'YYYY M D'],
-			true).startOf('day');
+	// Builds an example date-time string, suitable for input, from the given date
+	function getDateTimeSampleText(now) {
+		return now.clone().format(timestampFormat);
 	}
 
-	function parseTimeOfDayFrom(date, input) {
-		return moment(
-			date.format('YYYY-MM-DDT') + input.value,
-			[
-				'YYYY-MM-DDTh:mm a', 'YYYY-MM-DDTh:mma',
-				'YYYY-MM-DDThmm a', 'YYYY-MM-DDThmma',
-				'YYYY-MM-DDTHH:mm', 'YYYY-MM-DDTHHmm'
-			],
-			true);
+	// Returns a new moment rounded to the nearest minute from the given input's value, or null
+	function parseDateTimeFrom(input) {
+		if (input && input.value) {
+			return moment(moment(input.value).format(timestampFormat));
+		}
+		return null;
 	}
-
 
 	// Adds our events to a new guest widget
 	EventFormViewModel.prototype._wireUpEmailWidget = function (newWidget) {
@@ -185,21 +178,12 @@
 	// Returns an event view model from the form's validated input values
 	EventFormViewModel.prototype.newEventFrom = function () {
 
-		var start = parseTimeOfDayFrom(
-			parseDateFrom(document.getElementById('new-event-start-date')),
-			document.getElementById('new-event-start-time'));
-
-		var durationHours = parseFloat(
-			document.getElementById('new-event-duration').value);
-
-		var end = start.clone().add(durationHours, 'h');
-
 		return new EventViewModel({
 			title: document.getElementById('new-event-name').value,
 			type: document.getElementById('new-event-type').value,
 			host: document.getElementById('new-event-host').value,
-			start: start.format(timestampFormat),
-			end: end.format(timestampFormat),
+			start: parseDateTimeFrom(document.getElementById('new-event-start-date')).format(timestampFormat),
+			end: parseDateTimeFrom(document.getElementById('new-event-end-date')).format(timestampFormat),
 			location: document.getElementById('new-event-location').value,
 			message: document.getElementById('new-event-message').value,
 			guests: this.guestEmails.map(function (widget) { return widget.email; })
@@ -210,16 +194,11 @@
 	EventFormViewModel.prototype.populateFrom = function (event) {
 		var that = this;
 
-		var start = moment(event.start);
-		var duration = start.twix(moment(event.end)).length('hours');
-
-
 		document.getElementById('new-event-name').value = event.title;
 		document.getElementById('new-event-type').value = event.type;
 		document.getElementById('new-event-host').value = event.host;
-		document.getElementById('new-event-start-date').value = start.format('YYYY-MM-DD');
-		document.getElementById('new-event-start-time').value = start.format('h:mm a');
-		document.getElementById('new-event-duration').value = duration;
+		document.getElementById('new-event-start-date').value = moment(event.start).format(timestampFormat);
+		document.getElementById('new-event-end-date').value = moment(event.end).format(timestampFormat);
 		document.getElementById('new-event-location').value = event.location;
 		document.getElementById('new-event-message').value = event.message;
 
@@ -249,21 +228,13 @@
 		this._nextGuestEmailId = 1;
 	};
 
-	// TODO: refactor date and time inputs into single widget
 	EventFormViewModel.prototype.init = function () {
 		var that = this;
 
 		var emailEl = document.getElementById('new-event-guest');
 		var startDateEl = document.getElementById('new-event-start-date');
-		var startTimeEl = document.getElementById('new-event-start-time');
-		var durationEl = document.getElementById('new-event-duration');
+		var endDateEl = document.getElementById('new-event-end-date');
 		that._guestList = document.getElementById('new-event-guest-list');
-
-		var minDuration = parseFloat(durationEl.getAttribute('min').value);
-		minDuration = isNaN(minDuration) ? 1 : minDuration;
-
-		var maxDuration = parseFloat(durationEl.getAttribute('max').value);
-		maxDuration = isNaN(maxDuration) ? 24 : maxDuration;
 
 		// Permit empty, or a valid email
 		EventFormViewModel.prototype.updateEmailValidity = function () {
@@ -296,113 +267,84 @@
 
 			if (startDateEl.value) {
 
-				var start = parseDateFrom(startDateEl);
-				if (start.isValid()) {
+				var now = moment(); // TODO: inject current time dependency for testability
 
-					var now = moment(); // TODO: inject current time dependency for testability
+				var startDateTime = parseDateTimeFrom(startDateEl);
+				if (startDateTime.isValid()) {
 
-					var startDateTime = parseTimeOfDayFrom(start, startTimeEl);
+					// Update the input's value with our most-correct format;
+					// this avoids 'step mismatch' validation errors on mobile
+					// (when a default datetime is supplied, which includes seconds).
+					startDateEl.value = startDateTime.format(timestampFormat);
 
-					if (startDateTime.isValid()) {
+					// Ensure the start date and time occurs in the future
+					if (now.isAfter(startDateTime)) {
 
-						// Ensure the start date and time occurs in the future
-						if (now.isAfter(startDateTime)) {
-
-							return that.failInput(startDateEl, 'The event cannot begin in the past.');
-						}
-					} else {
-
-						// Ensure the start date occurs in the future
-						if (now.isAfter(start)) {
-
-							return that.failInput(startDateEl, 'The event cannot begin in the past.');
-						}
+						return that.failInput(startDateEl, 'The event cannot begin in the past.');
 					}
+
+					// If still empty, default the end time based on the valid start time
+					if (!endDateEl.value) {
+						endDateEl.value = startDateTime.clone().add(2, 'h').format(timestampFormat);
+						that.updateEndDateValidity();
+					}
+
 				} else {
-					return that.failInput(startDateEl, 'Please enter a start date like 2016-08-21');
+
+					return that.failInput(startDateEl, 'Please enter a start date and time like ' + getDateTimeSampleText(now));
 				}
 			}
 
 			return that.passInput(startDateEl);
 		};
 
-		EventFormViewModel.prototype.updateStartTimeValidity = function () {
+		// Ensure the event does not end before it starts or is invalid
+		EventFormViewModel.prototype.updateEndDateValidity = function () {
 
-			if (startTimeEl.value) {
+			if (endDateEl.value) {
 
 				var now = moment(); // TODO: inject current time dependency for testability
 
-				// Get the input start date, otherwise today
-				var startDay = parseDateFrom(startDateEl);
+				var endDateTime = parseDateTimeFrom(endDateEl);
+				if (endDateTime.isValid()) {
 
-				var haveStartDate = startDay.isValid();
+					// Update the input's value with our most-correct format;
+					// this avoids 'step mismatch' validation errors on mobile
+					// (when a default datetime is supplied, which includes seconds).
+					endDateEl.value = endDateTime.format(timestampFormat);
 
-				if (!haveStartDate)
-					startDay = now.clone().startOf('day');
+					var startDateTime = parseDateTimeFrom(startDateEl);
+					if (startDateTime.isValid()) {
 
-				var start = parseTimeOfDayFrom(startDay, startTimeEl);
+						// Ensure the end occurs after the start
+						if (startDateTime.isAfter(endDateTime)) {
 
-				if (start.isValid()) {
-
-					if (haveStartDate) {
-
-						// Re-validate the start date with the given TOD
-						that.updateStartDateValidity();
-
-						// Ensure the start datetime occurs in the future
-						if (now.isAfter(start)) {
-
-							return that.failInput(startTimeEl, 'The event cannot begin in the past.');
+							return that.failInput(endDateEl, 'The event cannot begin before it starts.');
 						}
 					}
 				} else {
-					return that.failInput(startTimeEl, 'Please enter a time like 7:30 PM or 19:30');
+
+					return that.failInput(startDateEl, 'Please enter an end date and time like ' + getDateTimeSampleText(now));
 				}
 			}
 
-			return that.passInput(startTimeEl);
-		};
-
-		// Ensure the event lasts between 1 and 24 hours.
-		// Not all browsers (mobile) will respect the min and max attributes on 'number' inputs.
-		// Note that we intend to limit the choices to integral hours
-		// in the picker (step = 1) for a simpler UX, but non-integral values are not prohibited.
-		EventFormViewModel.prototype.updateDurationValidity = function () {
-
-			if (durationEl.value) {
-
-				var hours = parseFloat(durationEl.value);
-
-				// Ensure the user entered a number
-				if (isNaN(hours)) {
-
-					return that.failInput(durationEl, 'Please enter a number of hours.');
-				}
-
-				// Ensure the user entered a number within the allowed range
-				if (hours < minDuration || hours > maxDuration) {
-
-					return that.failInput(durationEl, 'Please enter a number of hours not less than 1 nor more than 24.');
-				}
-			}
-
-			return that.passInput(durationEl);
+			return that.passInput(endDateEl);
 		};
 
 		// Custom validate the email field on blur
 		emailEl.addEventListener(
 			'blur', that.updateEmailValidity);
 
-		// Custom validate the start fields on blur/update
+		// Custom validate the date fields on blur
+
 		startDateEl.addEventListener(
 			'blur', that.updateStartDateValidity);
 
-		startTimeEl.addEventListener(
-			'blur', that.updateStartTimeValidity);
+		endDateEl.addEventListener(
+			'blur', that.updateEndDateValidity);
 
-		// Custom validate the duration field on blur
-		durationEl.addEventListener(
-			'blur', that.updateDurationValidity);
+
+		// Complete initialization of the guest list widget
 
 		function handleGuestAdd() {
 
@@ -444,13 +386,10 @@
 			}
 		}
 
-		// Respond to the add email button
 		document.getElementById('new-event-guest-add-btn').addEventListener(
 			'click', handleGuestAdd);
 
 		function handleKeyboardNav(event) {
-
-			//console.log(event.keyCode);
 
 			if (event.altKey || event.ctrlKey || event.shiftKey) {
 				return true;
@@ -504,8 +443,6 @@
 			return res;
 		}
 
-		// Wire up keyboard navigation for the guest list
-		// TODO: refactor guest list into widget
 		that._guestList.addEventListener(
 			'keydown', handleKeyboardNav);
 
@@ -517,7 +454,6 @@
 				}
 
 				switch (event.keyCode) {
-					//case keyCodes.space:
 					case keyCodes.left:
 					case keyCodes.right:
 					case keyCodes.up:
@@ -544,10 +480,11 @@
 				return true;
 			});
 
-		// Add an icon to the add email button in our standard way
 		var addGuestButton = document.getElementById('new-event-guest-add-btn');
 		appendGlyph(addGuestButton, 'fa-plus', 'add guest');
 
+
+		// Perform final and cross-input validation checks on the new event form
 		this.preFormSubmit = function () {
 
 			var isValid = true;
@@ -562,12 +499,9 @@
 				isValid &= input.validity.valid;
 			});
 
-			// Check the start
+			// Check the dates
 			that.updateStartDateValidity();
-			that.updateStartTimeValidity();
-
-			// Check the duration
-			that.updateDurationValidity();
+			that.updateEndDateValidity();
 
 			// Ensure we have at least one guest's email
 			isValid &= that.updateGuestsValidity();

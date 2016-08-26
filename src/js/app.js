@@ -6,8 +6,7 @@
 /*globals LoadErrorWidget, SaveErrorWidget */
 /*globals timestampFormat */
 
-// TODO: find, use an accessible 'toast' library for success/error notifications.
-// TODO: keyboard navigation needs to see event list, and guest list, as 'one thing' (i.e. tab nav should skip over list items, unless list widgets are navigated into).
+// TODO: find, use an accessible 'toast' library for page-level success/error notifications.
 
 // Singleton application module
 (function (global, document) {
@@ -238,34 +237,29 @@
 		// Clear any existing error
 		app.loadError.unrender();
 
-		return EventRepository.getAllEventsForUser(app.user.email).then(function (events) {
+		return EventRepository.
+			getAllEventsForUser(app.user.email).then(function (events) {
 
-			// Turn the models into view models and sort them
-			app.events = events.
-			map(function (model) {
-				return new EventViewModel(model);
-			}).
-			sort(function (lhs, rhs) {
-				var x = moment(rhs.start, timestampFormat);
-				var y = moment(lhs.start, timestampFormat);
-				return x < y ? -1 : x > y ? 1 : 0;
+				// Turn the models into view models and sort them
+				app.events = events.
+					map(function (model) { return new EventViewModel(model); }).
+					sort(EventViewModel.sortByStartDescending);
+
+				// Add each view model to our list and render it
+				app.events.
+				forEach(function (event) {
+					app.addEventToList(event);
+				});
+
+				scrollToTop();
+
+			}).fail(function () {
+
+				document.getElementById('event-list').appendChild(
+					app.loadError.render());
+
+				scrollToId(app.loadError.id);
 			});
-
-			// Add each view model to our list and render it
-			app.events.
-			forEach(function (event) {
-				app.addEventToList(event);
-			});
-
-			scrollToTop();
-
-		}).fail(function () {
-
-			document.getElementById('event-list').appendChild(
-				app.loadError.render());
-
-			scrollToId(app.loadError.id);
-		});
 	};
 
 	// Monitor app for state changes

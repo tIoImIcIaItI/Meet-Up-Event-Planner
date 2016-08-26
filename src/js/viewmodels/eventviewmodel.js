@@ -116,49 +116,21 @@
 		var startMoment = moment(this.start, timestampFormat);
 		var endMoment = moment(this.end, timestampFormat);
 		var when = startMoment.twix(endMoment).format({
-			// groupMeridiems: true,
-			// spaceBeforeMeridiem: true,
 			showDayOfWeek: true,
 			hideTime: false,
 			hideYear: false,
 			implicitMinutes: true,
 			implicitDate: false,
 			implicitYear: false
-			// yearFormat: 'YYYY',
-			// monthFormat: 'MMM',
-			// weekdayFormat: 'ddd',
-			// dayFormat: 'D',
-			// meridiemFormat: 'A',
-			// hourFormat: momentHourFormat,
-			// minuteFormat: 'mm',
-			// allDay: 'all day',
-			// explicitAllDay: false,
-			// lastNightEndsAt: 0,
-			// template: Twix.formatTemplate
 		});
 
 		var start = newTextElement('time', when);
-		// start.classList.add('event-start');
 		prependGlyph(start, 'fa-calendar-o', 'When');
 		start.setAttribute('datetime', startMoment.format());
 
 		var startAnnotation = newTextElement('div', startMoment.fromNow());
 		startAnnotation.classList.add('event-starts-about');
-		// startAnnotation.classList.add('event-value-secondary');
 		startAnnotation.classList.add('pull-right');
-
-		// var diff = moment(startMoment.diff(endMoment));
-		// var duration = moment.duration(diff, timestampFormat);
-
-		// var end = newTextElement('div', endMoment.format('LLLL'));
-		// end.classList.add('event-end');
-		// prependGlyph(end, 'fa-clock-o', 'End');
-		// li.appendChild(end);
-
-		// var durationAnnotation = newTextElement('div', duration.humanize());
-		// durationAnnotation.classList.add('event-ends-about');
-		// durationAnnotation.classList.add('event-value-secondary');
-		// li.appendChild(durationAnnotation);
 
 		li.appendChild(renderTitle(this.title));
 
@@ -179,6 +151,12 @@
 		docFragment.appendChild(actualLi);
 
 		return docFragment;
+	};
+
+	EventViewModel.sortByStartDescending = function(lhs, rhs) {
+		var x = moment(rhs.start, timestampFormat);
+		var y = moment(lhs.start, timestampFormat);
+		return x < y ? -1 : x > y ? 1 : 0;
 	};
 
 	global.EventViewModel = EventViewModel;

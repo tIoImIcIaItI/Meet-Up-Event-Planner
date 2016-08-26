@@ -18,51 +18,6 @@ module.exports = function (grunt) {
 	grunt.initConfig({
 		pkg: grunt.file.readJSON('package.json'),
 
-		// Optimize final images
-		// imagemin: {
-		// 	dist: {
-		// 		options: {
-		// 			optimizationLevel: 7
-		// 		},
-		// 		files: [{
-		// 			expand: true,
-		// 			cwd: 'src/img/staging',
-		// 			src: '*.{png,jpg,jpeg,gif}',
-		// 			dest: 'src/img'
-		// 		}]
-		// 	}
-		// },
-
-		// Resize and rename source images
-		// responsive_images: {
-		// 	dist: {
-		// 		options: {
-		// 			engine: 'im',
-		// 			concurrency: 3,
-		// 			quality: 100,
-		// 			sizes: [{
-		// 				name: "sm",
-		// 				width: 320
-		// 			}, {
-		// 				name: "md",
-		// 				width: 640
-		// 			}, {
-		// 				name: "lg",
-		// 				width: 1024
-		// 			}, {
-		// 				name: "xl",
-		// 				width: 2048
-		// 			}]
-		// 		},
-		// 		files: [{
-		// 			expand: true,
-		// 			cwd: 'images',
-		// 			src: ['*.{png,jpg,jpeg,gif}'],
-		// 			dest: 'src/img/staging'
-		// 		}]
-		// 	}
-		// },
-
 		// Minify HTML files
 		htmlmin: {
 			dist: {
@@ -96,23 +51,16 @@ module.exports = function (grunt) {
 						'src/css/md.css',
 						'src/css/app.css'
 					]
-					// files: [{
-					//     expand: true,
-					//     cwd: 'src/css',
-					//     src: '*.css',
-					//     dest: 'dist/css'
-					// }]
 				}
 			}
 		},
 
-		// Join JavaScipt files together
+		// Join JavaScipt files together in specific order
 		concat: {
 			options: {
 				sourceMap: true
 			},
 			dist: {
-				//src: ['src/js/**/*.js'],
 				src: [
 					'src/js/utils/arrays.js',
 					'src/js/utils/objects.js',
@@ -170,15 +118,13 @@ module.exports = function (grunt) {
 
 	});
 
+
 	grunt.loadNpmTasks('grunt-contrib-concat');
 	grunt.loadNpmTasks('grunt-contrib-cssmin');
 	grunt.loadNpmTasks('grunt-contrib-uglify');
 	grunt.loadNpmTasks('grunt-contrib-copy');
 	grunt.loadNpmTasks('grunt-contrib-htmlmin');
 	grunt.loadNpmTasks('grunt-contrib-clean');
-	// grunt.loadNpmTasks('grunt-responsive-images');
-	// grunt.loadNpmTasks('grunt-contrib-imagemin');
-	// grunt.loadNpmTasks('grunt-newer');
 
 
 	// The default task removes any prior build outputs,
@@ -187,9 +133,7 @@ module.exports = function (grunt) {
 	// and copies any remaining content into the distribution folder.
 	grunt.registerTask('default', [
 		'clean',
-		//'responsive_images', 'imagemin',
-		'htmlmin', 'cssmin', 'concat', 'uglify'//,
-		//'copy'
+		'htmlmin', 'cssmin', 'concat', 'uglify'
 	]);
 
 };

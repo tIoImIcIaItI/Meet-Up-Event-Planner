@@ -14,8 +14,6 @@ That said, 3rd-party components are used as follows.
 
 ## Building the App
 
-A pre-built version is already present in the [`dist/`](dist/) folder.
-
 A build process was implemented using Node (NPM) and Grunt.
 
 - Using `grunt-contrib-htmlmin`, all (local) HTML files were automatically minimized.
@@ -59,6 +57,8 @@ All browsers will show validation errors if an invalid form submit is attempted.
 
 ### Accessibility
 
+NOTE: Two `datetime-local` inputs are required by the rubric/reviewer.
+
 Aria attributes and HTML semantic elements have been used throughout, for both static and dynamic content.
 Application and form error conditions are announced via the aria `alert` role.
 Selected list items receive the `aria-selected` attribute.
@@ -82,8 +82,9 @@ Although all user and event data is stored in memory and loaded from hardcoded o
 the event repository exposes an asynchronous (promise-based) API as one would expect from a real service component.
 Any errors encountered attempting to load or save events will display an alert banner, marked up with aria.
 
-### What's Missing From This Incomplete App
+### Known Issues
 
+- [UX] Two `datetime-local` inputs are required by the rubric/reviewer.
 - Editing or deleting events, once created, is not supported.
 - [SECURITY] User inputs are not cleansed for HTML, script, etc. before being added to the data store or rendered in the browser.
 - Persistence of user-entered data is limited to the page's lifetime (i.e. is held in browser memory only).

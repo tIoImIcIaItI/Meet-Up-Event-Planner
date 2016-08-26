@@ -114,7 +114,8 @@ label {
 	font-size: 0.5em;
 	position: relative;
 	top: -1em;
-	left: .5em;}
+	left: 0.5em;
+}
 
 ul {
 	margin: 0;
@@ -282,10 +283,6 @@ time,
 	width: 80%;
 }
 
-.new-event-duration {
-	width: 80%;
-}
-
 .guest-item {
 	background-color: #eeeef9;
 	padding-left: 1em;
@@ -338,7 +335,7 @@ time,
 }
 
 .validation-error {
-    min-height: 1.5em; /* prevent collapse causing sliding content */
+	min-height: 1.5em; /* prevent collapse causing sliding content */
 	margin: 0;
 	margin-top: 0.25em;
 	font-style: italic;
