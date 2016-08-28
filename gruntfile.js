@@ -1,4 +1,4 @@
-/// <binding BeforeBuild='default' Clean='clean' />
+/// <binding BeforeBuild='default' AfterBuild='watch' Clean='clean' />
 /*global module */
 
 // PROJECT FOLDER STRUCTURE
@@ -114,6 +114,12 @@ module.exports = function (grunt) {
 				'src/img/',
 				'src/img/staging/'
 			]
+		},
+
+		// Rebuild the project after any source file is changed
+		watch: {
+			files: 'src/**/*.*',
+			tasks: ['default']
 		}
 
 	});
@@ -125,6 +131,7 @@ module.exports = function (grunt) {
 	grunt.loadNpmTasks('grunt-contrib-copy');
 	grunt.loadNpmTasks('grunt-contrib-htmlmin');
 	grunt.loadNpmTasks('grunt-contrib-clean');
+	grunt.loadNpmTasks('grunt-contrib-watch');
 
 
 	// The default task removes any prior build outputs,
