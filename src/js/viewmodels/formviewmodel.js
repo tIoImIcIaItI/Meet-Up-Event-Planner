@@ -234,9 +234,28 @@
 	FormViewModel.prototype.initializeSubmitHook = function () {
 		var that = this;
 
+		function isInvalid(el) {
+			return el && el.getAttribute('aria-invalid') === 'true';
+		}
+
 		this.el.addEventListener('submit', function (evt) {
 
+			// Run any custom form validation logic first
 			if (that.preFormSubmit && !that.preFormSubmit()) {
+
+				// If there are input errors, attempt to take the user to the first
+
+				if (!isValid) {
+
+					var firstInvalidInput =
+						that.allInputs().find(isInvalid);
+
+					if (firstInvalidInput) {
+						scrollToId(firstInvalidInput.id);
+						firstInvalidInput.focus();
+					}
+				}
+
 				evt.preventDefault();
 				return false;
 			}
