@@ -7,6 +7,7 @@
 
 // Encapsulates and specializes the new event form
 // TODO: componentize guest list into widget
+// TODO: componentize datetime range into widget
 (function (global, document) {
 	'use strict';
 
@@ -231,6 +232,9 @@
 	EventFormViewModel.prototype.init = function () {
 		var that = this;
 
+		var startValidationDepth = 0;
+		var endValidationDepth = 0;
+
 		var emailEl = document.getElementById('new-event-guest');
 		var startDateEl = document.getElementById('new-event-start-date');
 		var endDateEl = document.getElementById('new-event-end-date');
@@ -265,70 +269,130 @@
 		// Ensure the event is not in the past or invalid
 		EventFormViewModel.prototype.updateStartDateValidity = function () {
 
-			if (startDateEl.value) {
+			if (startValidationDepth > 1)
+				return true;
 
-				var now = moment(); // TODO: inject current time dependency for testability
+			startValidationDepth++;
+			try {
 
-				var startDateTime = parseDateTimeFrom(startDateEl);
-				if (startDateTime.isValid()) {
+				if (startDateEl.value) {
 
-					// Update the input's value with our most-correct format;
-					// this avoids 'step mismatch' validation errors on mobile
-					// (when a default datetime is supplied, which includes seconds).
-					startDateEl.value = startDateTime.format(timestampFormat);
+					var now = moment().add(1, 'm'); // TODO: inject current time dependency for testability
 
-					// Ensure the start date and time occurs in the future
-					if (now.isAfter(startDateTime)) {
+					var startDateTime = parseDateTimeFrom(startDateEl);
+					if (startDateTime && startDateTime.isValid()) {
 
-						return that.failInput(startDateEl, 'The event cannot begin in the past.');
+						// Update the input's value with our most-correct format;
+						// this avoids 'step mismatch' validation errors on mobile
+						// (when a default datetime is supplied, which includes seconds).
+						startDateEl.value = startDateTime.format(timestampFormat);
+
+						// Ensure the start date and time occurs in the future
+						if (now.isAfter(startDateTime)) {
+
+							// We don't have a valid start date, so no longer can we assert anything about the end date relative to the start
+							endDateEl.removeAttribute('min');
+
+							return that.failInput(startDateEl, 'The event cannot begin in the past.');
+						}
+
+						// Set the min value on the end date to be after the start
+						var minEnd = startDateTime.clone().add(1, 'm').format(timestampFormat);
+						if (endDateEl.getAttribute('min') !== minEnd) // setting this attribute may clear any 'partial' input value
+							endDateEl.setAttribute('min', minEnd);
+
+						if (!endDateEl.value) {
+
+							// If still empty, default the end time based on the valid start time
+							endDateEl.value = startDateTime.clone().add(2, 'h').format(timestampFormat);
+						}
+
+					} else {
+
+						// We don't have a valid start date, so no longer can we assert anything about the end date relative to the start
+						endDateEl.removeAttribute('min');
+
+						return that.failInput(startDateEl, 'Please enter a start date and time like ' + getDateTimeSampleText(now));
 					}
-
-					// If still empty, default the end time based on the valid start time
-					if (!endDateEl.value) {
-						endDateEl.value = startDateTime.clone().add(2, 'h').format(timestampFormat);
-						that.updateEndDateValidity();
-					}
-
-				} else {
-
-					return that.failInput(startDateEl, 'Please enter a start date and time like ' + getDateTimeSampleText(now));
 				}
-			}
 
-			return that.passInput(startDateEl);
+				return that.passInput(startDateEl);
+
+			} finally {
+
+				// Always re-validate the end date after the start date changes
+				that.updateEndDateValidity();
+
+				startValidationDepth--;
+			}
 		};
 
 		// Ensure the event does not end before it starts or is invalid
 		EventFormViewModel.prototype.updateEndDateValidity = function () {
 
-			if (endDateEl.value) {
+			if (endValidationDepth > 1)
+				return true;
 
-				var now = moment(); // TODO: inject current time dependency for testability
+			endValidationDepth++;
+			try {
 
-				var endDateTime = parseDateTimeFrom(endDateEl);
-				if (endDateTime.isValid()) {
+				if (endDateEl.value) {
 
-					// Update the input's value with our most-correct format;
-					// this avoids 'step mismatch' validation errors on mobile
-					// (when a default datetime is supplied, which includes seconds).
-					endDateEl.value = endDateTime.format(timestampFormat);
+					var now = moment().add(1, 'm'); // TODO: inject current time dependency for testability
 
-					var startDateTime = parseDateTimeFrom(startDateEl);
-					if (startDateTime.isValid()) {
+					var endDateTime = parseDateTimeFrom(endDateEl);
+					if (endDateTime && endDateTime.isValid()) {
+
+						// Update the input's value with our most-correct format;
+						// this avoids 'step mismatch' validation errors on mobile
+						// (when a default datetime is supplied, which includes noneditable and nonvisible seconds).
+						endDateEl.value = endDateTime.format(timestampFormat);
 
 						// Ensure the end occurs after the start
-						if (startDateTime.isAfter(endDateTime)) {
+						var startDateTime = parseDateTimeFrom(startDateEl);
+						if (startDateTime && startDateTime.isValid()) {
 
-							return that.failInput(endDateEl, 'The event cannot begin before it starts.');
+							if (startDateTime.clone().add(1, 'm').isAfter(endDateTime)) {
+
+								// We don't have a valid end date, so no longer can we assert anything about the start date relative to the end
+								startDateEl.removeAttribute('max');
+
+								return that.failInput(endDateEl, 'The event cannot end before it starts.');
+							}
 						}
+
+						// Ensure the end date and time occurs in the future
+						if (now.isAfter(endDateTime)) {
+
+							// We don't have a valid end date, so no longer can we assert anything about the start date relative to the end
+							startDateEl.removeAttribute('max');
+
+							return that.failInput(endDateEl, 'The event cannot end in the past.');
+						}
+
+						// Set the max value on the start date to be before the end
+						var maxStart = endDateTime.clone().subtract(1, 'm').format(timestampFormat);
+						if (startDateEl.getAttribute('max') !== maxStart) // setting this attribute may clear any 'partial' input value
+							startDateEl.setAttribute('max', maxStart);
+
+					} else {
+
+						// We don't have a valid end date, so no longer can we assert anything about the start date relative to the end
+						startDateEl.removeAttribute('max');
+
+						return that.failInput(startDateEl, 'Please enter an end date and time like ' + getDateTimeSampleText(now));
 					}
-				} else {
-
-					return that.failInput(startDateEl, 'Please enter an end date and time like ' + getDateTimeSampleText(now));
 				}
-			}
 
-			return that.passInput(endDateEl);
+				return that.passInput(endDateEl);
+
+			} finally {
+
+				// Always re-validate the start date after the end date changes
+				that.updateStartDateValidity();
+
+				endValidationDepth--;
+			}
 		};
 
 		// Custom validate the email field on blur
@@ -500,8 +564,8 @@
 			});
 
 			// Check the dates
-			that.updateStartDateValidity();
-			that.updateEndDateValidity();
+			isValid &= that.updateStartDateValidity();
+			isValid &= that.updateEndDateValidity();
 
 			// Ensure we have at least one guest's email
 			isValid &= that.updateGuestsValidity();

@@ -194,8 +194,8 @@
 
 				/* ADAPTED FROM: https://developers.google.com/web/fundamentals/design-and-ui/input/forms/provide-real-time-validation?hl=en */
 				input.addEventListener('blur', addDirtyClass);
-				input.addEventListener('invalid', addDirtyClass);
-				input.addEventListener('valid', addDirtyClass);
+				//input.addEventListener('invalid', addDirtyClass);
+				//input.addEventListener('valid', addDirtyClass);
 
 				input.addEventListener('blur', validate);
 
@@ -243,17 +243,14 @@
 			// Run any custom form validation logic first
 			if (that.preFormSubmit && !that.preFormSubmit()) {
 
-				// If there are input errors, attempt to take the user to the first
+				// Attempt to take the user to the first invalid input
 
-				if (!isValid) {
+				var firstInvalidInput =
+					that.allInputs().find(isInvalid);
 
-					var firstInvalidInput =
-						that.allInputs().find(isInvalid);
-
-					if (firstInvalidInput) {
-						scrollToId(firstInvalidInput.id);
-						firstInvalidInput.focus();
-					}
+				if (firstInvalidInput) {
+					scrollToId(firstInvalidInput.id);
+					firstInvalidInput.focus();
 				}
 
 				evt.preventDefault();
