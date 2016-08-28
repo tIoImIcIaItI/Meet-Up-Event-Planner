@@ -367,22 +367,6 @@ time,
 		padding-right: 0.5em;
 	}
 
-/* SOURCE: https://developers.google.com/web/fundamentals/design-and-ui/input/forms/provide-real-time-validation?hl=en */
-/* fallback to nothing */
-/* ReSharper disable CssBrowserCompatibility */
-form input.dirty:not(:focus):valid,
-form textarea.dirty:not(:focus):valid {
-	/* ReSharper restore CssBrowserCompatibility */
-	border-color: green;
-}
-
-/* fallback to nothing */
-/* ReSharper disable CssBrowserCompatibility */
-form input.dirty:not(:focus):invalid,
-form textarea.dirty:not(:focus):invalid {
-	/* ReSharper restore CssBrowserCompatibility */
-	border-color: red;
-}
 
 /* ---------------------------------------------------------------------------*/
 /* At small-ish widths, tighten up the whitespace, and font and image sizes */
